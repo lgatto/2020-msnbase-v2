@@ -45,6 +45,37 @@
 
 \section{Introduction}
 
+Mass spectrometry is a powerful technology to assays chemical and
+biological samples. It is used routinely, with well characterised
+protocol, as well a development platform, to improve on existing
+methods and devise new ones to analyse ever more complex sample in
+greater details. The complexity and diversity of mass spectrometry
+yields data that is itself complex and often times of considerable
+size, that requires non trivial processing before producing
+interpretable results. This is particularly relevant, and can
+constitue a significant challenge for method developers that, in
+addition to the development of sample processing and mass spectrometry
+methods, need to process and analyse these new data to demonstrate the
+improvement in their technical and analytical work.
+
+
+There exists a very diverse catalogue of software tools to explore,
+process and interpret mass spectrometry data. These range from low
+level software libraries such as vendor libraries, jmzML (ref),
+proteowizard (ref), ... that are aimed at programmers to develop new
+applications, to user-oriented applications,  such as ProteomeDiscoverer, MaxQuant, ...
+
+The former are used through application programming interfaces
+exclusively, while the latter generally featuring graphical user
+interfaces (GUI).
+
+Give examples of libraries re-used in user/gui focused application
+
+
+In this software note, we are going to focus on metabolomics and
+proteomics applications of mass spectrometry.
+
+
 What is \texttt{MSnbase}: \texttt{MSnbase} \cite{Gatto:2012} offers a
 solution between low level liraries such as jmzml, exclusively for the
 development of new applications and GUI software, that provides a
