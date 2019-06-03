@@ -63,24 +63,24 @@ There exists a very diverse catalogue of software tools to explore,
 process and interpret mass spectrometry data. These range from low
 level software libraries such as vendor libraries, jmzML (ref),
 proteowizard (ref), ... that are aimed at programmers to develop new
-applications, to user-oriented applications,  such as ProteomeDiscoverer, MaxQuant, ...
+applications, to user-oriented applications, such as
+ProteomeDiscoverer, MaxQuant, ... that provide a limited and fixed set
+of functionality. The former are used through application programming
+interfaces exclusively, while the latter generally featuring graphical
+user interfaces (GUI).
 
-The former are used through application programming interfaces
-exclusively, while the latter generally featuring graphical user
-interfaces (GUI).
-
-Give examples of libraries re-used in user/gui focused application
-
-
-In this software note, we are going to focus on metabolomics and
-proteomics applications of mass spectrometry.
+TODO: Give examples of libraries re-used in user/gui focused
+application...
 
 
-What is \texttt{MSnbase}: \texttt{MSnbase} \cite{Gatto:2012} offers a
-solution between low level liraries such as jmzml, exclusively for the
-development of new applications and GUI software, that provides a
-limited and fixed set of functionality.
-
+In this software note, we present version 2 of the \texttt{MSnbase}
+\cite{Gatto:2012} R/Bioconductor software package. \texttt{MSnbase}
+offers a platform that lies between low level libraries and end-use
+software. It provides a flexible command line environment for
+metabolomics and proteomics mass spectrometry-based application, that
+allows a detailed step-by-step processing, analysis and exploration of
+the data and development of novel computational mass spectrometry
+methods.
 
 
 \section{Software functionality}
@@ -93,7 +93,11 @@ benchmarking, used in ms-based proteomics and metabolomics.
 
 \subsection{Use cases}
 
-Example applications: visualisation, ...
+Example applications:
+
+- visualisation
+- large scale data analyses (metabolomics, Johannes)
+- boxcar prototyping
 
 \section{Discussion}
 
