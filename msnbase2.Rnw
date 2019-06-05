@@ -85,6 +85,13 @@ methods.
 
 \section{Software functionality}
 
+We are going to present the new raw data infrastructure that has been
+available since \texttt{MSnbase} version 2.0, and then describe how it
+is leveraged to process large amount of data. We are then going to
+demonstrate some visualisation that make use of the raw data
+structures available in \texttt{MSnbase} and conlude with an example
+if flexible prototyping, by showing how to quickly combine spectra
+acquired using the Boxcar method (REF).
 
 \subsection{On disk backend}
 
@@ -95,8 +102,10 @@ benchmarking, used in ms-based proteomics and metabolomics.
 
 Example applications:
 
-- visualisation
 - large scale data analyses (metabolomics, Johannes)
+
+- visualisation: Jo's XIC plots, possibly also MSMap, with animation.
+
 - boxcar prototyping
 
 \section{Discussion}
