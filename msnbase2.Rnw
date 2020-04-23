@@ -45,18 +45,18 @@
 
 \section{Introduction}
 
-Mass spectrometry is a powerful technology to assays chemical and
+Mass spectrometry is a powerful technology to assay chemical and
 biological samples. It is used routinely, with well characterised
-protocol, as well a development platform, to improve on existing
+protocols, as well a development platform, to improve on existing
 methods and devise new ones to analyse ever more complex sample in
 greater details. The complexity and diversity of mass spectrometry
 yields data that is itself complex and often times of considerable
-size, that requires non trivial processing before producing
-interpretable results. This is particularly relevant, and can
-constitue a significant challenge for method developers that, in
-addition to the development of sample processing and mass spectrometry
-methods, need to process and analyse these new data to demonstrate the
-improvement in their technical and analytical work.
+size, requiring non trivial processing before producing interpretable
+results. This is particularly relevant, and can constitue a
+significant challenge for method developers that, in addition to the
+development of sample processing and mass spectrometry methods, need
+to process and analyse these new data to demonstrate the improvement
+in their technical and analytical work.
 
 
 There exists a very diverse catalogue of software tools to explore,
@@ -76,11 +76,11 @@ application...
 In this software note, we present version 2 of the \texttt{MSnbase}
 \cite{Gatto:2012} R/Bioconductor software package. \texttt{MSnbase}
 offers a platform that lies between low level libraries and end-use
-software. It provides a flexible command line environment for
-metabolomics and proteomics mass spectrometry-based application, that
-allows a detailed step-by-step processing, analysis and exploration of
-the data and development of novel computational mass spectrometry
-methods.
+software. It provides a flexible and interactive command line
+environment for metabolomics and proteomics mass spectrometry-based
+application. It allows a detailed step-by-step processing, analysis
+and exploration of the data and development of novel computational
+mass spectrometry methods.
 
 
 \section{Software functionality}
@@ -91,7 +91,7 @@ is leveraged to process large amount of data. We are then going to
 demonstrate some visualisation that make use of the raw data
 structures available in \texttt{MSnbase} and conlude with an example
 if flexible prototyping, by showing how to quickly combine spectra
-acquired using the Boxcar method (REF).
+acquired using the Boxcar method \cite{Meier:2018}.
 
 \subsection{On disk backend}
 
