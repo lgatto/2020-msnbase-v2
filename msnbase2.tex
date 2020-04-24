@@ -1,6 +1,6 @@
 \documentclass[journal=jacsat,manuscript=article]{achemso}\usepackage[]{graphicx}\usepackage[]{color}
-%% maxwidth is the original width if it is less than linewidth
-%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
 \def\maxwidth{ %
   \ifdim\Gin@nat@width>\linewidth
@@ -48,6 +48,60 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
+\usepackage{alltt}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+%% \definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+%% \newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+%% \newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+%% \newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+%% \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+%% \newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+%% \newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+%% \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+%% \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+%% \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+%% \let\hlipl\hlkwb
+
+%% \usepackage{framed}
+%% \makeatletter
+%% \newenvironment{kframe}{%
+%%  \def\at@end@of@kframe{}%
+%%  \ifinner\ifhmode%
+%%   \def\at@end@of@kframe{\end{minipage}}%
+%%   \begin{minipage}{\columnwidth}%
+%%  \fi\fi%
+%%  \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+%%  \colorbox{shadecolor}{##1}\hskip-\fboxsep
+%%      % There is no \\@totalrightmargin, so:
+%%      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+%%  \MakeFramed {\advance\hsize-\width
+%%    \@totalleftmargin\z@ \linewidth\hsize
+%%    \@setminipage}}%
+%%  {\par\unskip\endMakeFramed%
+%%  \at@end@of@kframe}
+%% \makeatother
+
+%% \usepackage{xcolor}
+
+%% \definecolor{shadecolor}{rgb}{.97, .97, .97}
+%% \definecolor{messagecolor}{rgb}{0, 0, 0}
+%% \definecolor{warningcolor}{rgb}{1, 0, 1}
+%% \definecolor{errorcolor}{rgb}{1, 0, 0}
+%% \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{subfig}
+\usepackage{graphicx}
 \usepackage{alltt}
 
 \usepackage{chemformula} % Formula subscripts using \ch{}
@@ -64,7 +118,7 @@
 
 \author{Laurent Gatto}
 \email{laurent.gatto@uclouvain.be}
-\affiliation[UCLouvain]{de Duve Institute, Universit\'e catholique de Louvain, Brussels, Belgium}
+\affiliation[UCLouvain]{Computational Biology Unit, de Duve Institute, Universit\'e catholique de Louvain, Brussels, Belgium}
 \author{Sebastian Gibb}
 \affiliation[University of Greifswald]{Department of Anaesthesiology and Intensive Care of the University Medicine Greifswald, Germany}
 \author{Johannes Rainer}
@@ -77,6 +131,7 @@
 \abbreviations{}
 \keywords{Bioconductor, mass spectrometry, software, reproducible research} %% up to 10 keywords
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 %% \begin{tocentry}
@@ -87,10 +142,11 @@
   We present version 2 of the \texttt{MSnbase} R/Bioconductor
   package. \texttt{MSnbase} provides infrastructure for the
   manipulation, processing and visualisation of mass spectrometry
-  data. Here we present how the new \textit{on disk} infrastructure
+  data. Here we present how the new \textit{on-disk} infrastructure
   allows the handling of hundreds on commodity hardware and present
   some application of the package.
 \end{abstract}
+
 
 
 \section{Introduction}
@@ -136,12 +192,107 @@ methods.
 \section{Software functionality}
 
 
-\subsection{On disk backend}
+\subsection{On-disk backend}
 
-Efficient low level access: in memory vs on disk mode (using mzR),
-benchmarking, used in ms-based proteomics and metabolomics.
+The main feature in version 2 of the \texttt{MSnbase} package was the
+addition of different backends for raw data storage, namely
+\textit{in-memory} and on-disk. The following code chunk
+demonstrates how to create two \texttt{MSnExp} objects, tailored to
+manage mass spectrometry experiments, storing data in-memory or
+on-disk.
 
-Lazy evaluation.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(}\hlstr{"MSnbase"}\hlstd{)}
+\hlstd{raw_mem} \hlkwb{<-} \hlkwd{readMSData}\hlstd{(}\hlstr{"file.mzML"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"inMemory"}\hlstd{)}
+\hlstd{raw_dsk} \hlkwb{<-} \hlkwd{readMSData}\hlstd{(}\hlstr{"file.mzML"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"onDisk"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+The former is the legacy storage mode, implemented in the first
+version of the package, that loads all the raw data and the metadata
+in memory. This solution doesn't scale for modern large dataset, and
+was complemented by the on-disk backend, that only load
+metadata in memory and accesses the spectra in the original files when
+needed. There are two direct benefits using the on-disk
+backend. Table \ref{tab:bench1} shows 4-fold faster reading times
+(left) and 10-fold smaller memory footprint (right).
+
+
+
+
+\begin{table}[ht]
+\centering
+\subfloat[Reading time (s)]{\label{tab:tread}\scalebox{1}{\input{./tabs/t_read}}}\quad
+\subfloat[Object size (MB)]{\label{tab:sz}\scalebox{1}{\input{./tabs/sz}}}
+\caption{Reading time (in seconds) (left) and data size in memory (in
+  MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
+  only) and 6103 MS2 (on-disk and in-memory) spectra. }
+\label{tab:bench1}
+\end{table}
+
+
+The on-disk backend also offers efficient data manipulation by way of
+\textit{lazy processing}. Operations on the raw data are stored in a
+processing queue and only effectively applied when raw data is
+accessed on disk. As an example, the following short analysis
+pipeline, that can equally be applied to on in-memory or on-disk data
+retains MS2 spectra acquired between 1000 and 3000 seconds, extract
+the M/Z range corresponding to the TMT 6-plex range and focuses on the
+MS2 spectra with a precursor intensity greater than $11 \times 10^6$
+(the median precursor intensity). 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{x} \hlkwb{<-} \hlstd{x_dsk} \hlopt{%>%}
+    \hlkwd{filterRt}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{1000}\hlstd{,} \hlnum{3000}\hlstd{))} \hlopt{%>%}
+    \hlkwd{filterMz}\hlstd{(}\hlnum{120}\hlstd{,} \hlnum{135}\hlstd{)}
+\hlstd{x[}\hlkwd{precursorIntensity}\hlstd{(x)} \hlopt{>} \hlnum{11e6}\hlstd{, ]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+As shown on figure \ref{fig:filt}, this lazy mechanism si
+significantly faster than its application on in-memory data.
+
+\begin{figure}[ht]
+  \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=0.5\linewidth]{figure/plot_filter-1} 
+
+\end{knitrout}
+\caption{Filtering benchmark assessed over 10 interations on in-memory (top) and on-disk (bottom) data containing 6103 MS2 spectra.}
+\label{fig:filt}
+\end{figure}
+
+
+The advantageous reading and execution times and memory footprint of
+the on-disk backend are possible by avoiding unnecessary access to the
+raw data. Once access to the spectra M/Z and intensity values become
+mandatory (for example for plotting), then the in-memory backend
+becomes more efficient, as illustrated on figure
+\ref{fig:access}. This gain is maximal when the whole dataset is the
+be accessed (i.e. all spectra are already in memory) and negligeable
+when large fractions of the data need to be subset.
+
+\begin{figure}[ht]
+  \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=0.75\linewidth]{figure/plot_access-1} 
+
+\end{knitrout}
+\caption{Access time to spectra for the in-memory (left) and on-disk
+  (right) backends for 1, 10, 100 1000, 5000 and all 6103 spectra.}
+\label{fig:access}
+\end{figure}
+
+
+
 
 Enables large scale data analyses (metabolomics example, see Johannes)
 

@@ -1,4 +1,58 @@
-\documentclass[journal=jacsat,manuscript=article]{achemso}
+\documentclass[journal=jacsat,manuscript=article]{achemso}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+%% \definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+%% \newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+%% \newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+%% \newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+%% \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+%% \newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+%% \newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+%% \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+%% \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+%% \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+%% \let\hlipl\hlkwb
+
+%% \usepackage{framed}
+%% \makeatletter
+%% \newenvironment{kframe}{%
+%%  \def\at@end@of@kframe{}%
+%%  \ifinner\ifhmode%
+%%   \def\at@end@of@kframe{\end{minipage}}%
+%%   \begin{minipage}{\columnwidth}%
+%%  \fi\fi%
+%%  \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+%%  \colorbox{shadecolor}{##1}\hskip-\fboxsep
+%%      % There is no \\@totalrightmargin, so:
+%%      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+%%  \MakeFramed {\advance\hsize-\width
+%%    \@totalleftmargin\z@ \linewidth\hsize
+%%    \@setminipage}}%
+%%  {\par\unskip\endMakeFramed%
+%%  \at@end@of@kframe}
+%% \makeatother
+
+%% \usepackage{xcolor}
+
+%% \definecolor{shadecolor}{rgb}{.97, .97, .97}
+%% \definecolor{messagecolor}{rgb}{0, 0, 0}
+%% \definecolor{warningcolor}{rgb}{1, 0, 1}
+%% \definecolor{errorcolor}{rgb}{1, 0, 0}
+%% \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{subfig}
+\usepackage{graphicx}
+\usepackage{alltt}
 
 \usepackage{chemformula} % Formula subscripts using \ch{}
 \usepackage[T1]{fontenc} % Use modern font encodings
@@ -14,7 +68,7 @@
 
 \author{Laurent Gatto}
 \email{laurent.gatto@uclouvain.be}
-\affiliation[UCLouvain]{de Duve Institute, Universit\'e catholique de Louvain, Brussels, Belgium}
+\affiliation[UCLouvain]{Computational Biology Unit, de Duve Institute, Universit\'e catholique de Louvain, Brussels, Belgium}
 \author{Sebastian Gibb}
 \affiliation[University of Greifswald]{Department of Anaesthesiology and Intensive Care of the University Medicine Greifswald, Germany}
 \author{Johannes Rainer}
@@ -26,7 +80,7 @@
 
 \abbreviations{}
 \keywords{Bioconductor, mass spectrometry, software, reproducible research} %% up to 10 keywords
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 %% \begin{tocentry}
@@ -37,26 +91,32 @@
   We present version 2 of the \texttt{MSnbase} R/Bioconductor
   package. \texttt{MSnbase} provides infrastructure for the
   manipulation, processing and visualisation of mass spectrometry
-  data. Here we present how the new \textit{on disk} infrastructure
+  data. Here we present how the new \textit{on-disk} infrastructure
   allows the handling of hundreds on commodity hardware and present
   some application of the package.
 \end{abstract}
 
+<<setup, include = FALSE, message = FALSE>>=
+knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
+library("xtable")
+library("microbenchmark")
+library("tidyverse")
+@
 
 \section{Introduction}
 
-Mass spectrometry is a powerful technology to assay chemical and
+Mass spectrometry is a powerful technology to assays chemical and
 biological samples. It is used routinely, with well characterised
-protocols, as well a development platform, to improve on existing
+protocol, as well a development platform, to improve on existing
 methods and devise new ones to analyse ever more complex sample in
 greater details. The complexity and diversity of mass spectrometry
 yields data that is itself complex and often times of considerable
-size, requiring non trivial processing before producing interpretable
-results. This is particularly relevant, and can constitue a
-significant challenge for method developers that, in addition to the
-development of sample processing and mass spectrometry methods, need
-to process and analyse these new data to demonstrate the improvement
-in their technical and analytical work.
+size, that requires non trivial processing before producing
+interpretable results. This is particularly relevant, and can
+constitue a significant challenge for method developers that, in
+addition to the development of sample processing and mass spectrometry
+methods, need to process and analyse these new data to demonstrate the
+improvement in their technical and analytical work.
 
 
 There exists a very diverse catalogue of software tools to explore,
@@ -76,37 +136,138 @@ application...
 In this software note, we present version 2 of the \texttt{MSnbase}
 \cite{Gatto:2012} R/Bioconductor software package. \texttt{MSnbase}
 offers a platform that lies between low level libraries and end-use
-software. It provides a flexible and interactive command line
-environment for metabolomics and proteomics mass spectrometry-based
-application. It allows a detailed step-by-step processing, analysis
-and exploration of the data and development of novel computational
-mass spectrometry methods.
+software. It provides a flexible command line environment for
+metabolomics and proteomics mass spectrometry-based application, that
+allows a detailed step-by-step processing, analysis and exploration of
+the data and development of novel computational mass spectrometry
+methods.
 
 
 \section{Software functionality}
 
-We are going to present the new raw data infrastructure that has been
-available since \texttt{MSnbase} version 2.0, and then describe how it
-is leveraged to process large amount of data. We are then going to
-demonstrate some visualisation that make use of the raw data
-structures available in \texttt{MSnbase} and conlude with an example
-if flexible prototyping, by showing how to quickly combine spectra
-acquired using the Boxcar method \cite{Meier:2018}.
 
-\subsection{On disk backend}
+\subsection{On-disk backend}
 
-Efficient low level access: in memory vs on disk mode (using mzR),
-benchmarking, used in ms-based proteomics and metabolomics.
+The main feature in version 2 of the \texttt{MSnbase} package was the
+addition of different backends for raw data storage, namely
+\textit{in-memory} and on-disk. The following code chunk
+demonstrates how to create two \texttt{MSnExp} objects, tailored to
+manage mass spectrometry experiments, storing data in-memory or
+on-disk.
 
-\subsection{Use cases}
+<<readMSData, eval = FALSE, echo = TRUE>>=
+library("MSnbase")
+raw_mem <- readMSData("file.mzML", mode = "inMemory")
+raw_dsk <- readMSData("file.mzML", mode = "onDisk")
+@
 
-Example applications:
+The former is the legacy storage mode, implemented in the first
+version of the package, that loads all the raw data and the metadata
+in memory. This solution doesn't scale for modern large dataset, and
+was complemented by the on-disk backend, that only load
+metadata in memory and accesses the spectra in the original files when
+needed. There are two direct benefits using the on-disk
+backend. Table \ref{tab:bench1} shows 4-fold faster reading times
+(left) and 10-fold smaller memory footprint (right).
 
-- large scale data analyses (metabolomics, Johannes)
+<<time_sz>>=
+load("bench_time_sz.rda")
+time <- sapply(time_sz, function(x) x[, "time"])
+sz <- sapply(time_sz, function(x) x[, "sz"])
+colnames(sz) <- colnames(time) <- c(1, 5, 10)
+rownames(sz) <- rownames(time) <- c("in-memory", "on-disk")
+sz <- round(sz/(1014^2), 2)
+print(xtable(time), floating = FALSE, file = "tabs/t_read.tex")
+print(xtable(sz), floating = FALSE, include.rownames = FALSE, file = "tabs/sz.tex")
+@
 
-- visualisation: Jo's XIC plots, possibly also MSMap, with animation.
 
-- boxcar prototyping
+\begin{table}[ht]
+\centering
+\subfloat[Reading time (s)]{\label{tab:tread}\scalebox{1}{\input{./tabs/t_read}}}\quad
+\subfloat[Object size (MB)]{\label{tab:sz}\scalebox{1}{\input{./tabs/sz}}}
+\caption{Reading time (in seconds) (left) and data size in memory (in
+  MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
+  only) and 6103 MS2 (on-disk and in-memory) spectra. }
+\label{tab:bench1}
+\end{table}
+
+
+The on-disk backend also offers efficient data manipulation by way of
+\textit{lazy processing}. Operations on the raw data are stored in a
+processing queue and only effectively applied when raw data is
+accessed on disk. As an example, the following short analysis
+pipeline, that can equally be applied to on in-memory or on-disk data
+retains MS2 spectra acquired between 1000 and 3000 seconds, extract
+the M/Z range corresponding to the TMT 6-plex range and focuses on the
+MS2 spectra with a precursor intensity greater than $11 \times 10^6$
+(the median precursor intensity). 
+
+<<filter, eval = FALSE, echo = TRUE>>=
+x <- x_dsk %>%
+    filterRt(c(1000, 3000)) %>%
+    filterMz(120, 135)
+x[precursorIntensity(x) > 11e6, ]
+@
+
+As shown on figure \ref{fig:filt}, this lazy mechanism si
+significantly faster than its application on in-memory data.
+
+\begin{figure}[ht]
+  \centering
+<<plot_filter, message = FALSE, out.width = '50%', fig.width = 5, fig.height = 3>>=
+load("bench_t_filt.rda")
+ggplot2::autoplot(t_filt)
+@
+\caption{Filtering benchmark assessed over 10 interations on in-memory (top) and on-disk (bottom) data containing 6103 MS2 spectra.}
+\label{fig:filt}
+\end{figure}
+
+
+The advantageous reading and execution times and memory footprint of
+the on-disk backend are possible by avoiding unnecessary access to the
+raw data. Once access to the spectra M/Z and intensity values become
+mandatory (for example for plotting), then the in-memory backend
+becomes more efficient, as illustrated on figure
+\ref{fig:access}. This gain is maximal when the whole dataset is the
+be accessed (i.e. all spectra are already in memory) and negligeable
+when large fractions of the data need to be subset.
+
+\begin{figure}[ht]
+  \centering
+<<plot_access, message = FALSE, out.width = '75%', fig.width = 5, fig.height = 3>>=
+load("bench_t_access.rda")
+tibble(time = microbenchmark:::convert_to_unit(t_access$time, "ms"),
+       expr = as.character(t_access$expr)) %>%
+    mutate(n = sub("^access_.+_", "", expr)) %>%
+    mutate(n = sub("all", 6103, n)) %>%
+    mutate(mode = if_else(grepl("mem", expr), "in-memory", "on-disk")) %>%
+    ggplot(aes(x = n, y = time, fill = log10(as.numeric(n)))) + 
+    ggplot2::geom_violin() + 
+    ggplot2::scale_y_log10() +
+    ylab("Time [millisec]") +
+    xlab("Number of spectra (out of 6103)") +
+    facet_wrap(~ mode) +
+    theme(legend.position = "none")
+@
+\caption{Access time to spectra for the in-memory (left) and on-disk
+  (right) backends for 1, 10, 100 1000, 5000 and all 6103 spectra.}
+\label{fig:access}
+\end{figure}
+
+
+
+
+Enables large scale data analyses (metabolomics example, see Johannes)
+
+\subsection{Prototyping}
+
+See https://github.com/lgatto/msnbase\_boxcar.
+
+\subsection{Visualisation}
+
+Examples: 3D MSmap, boxcar, centroiding vignette
+
 
 \section{Discussion}
 
@@ -136,7 +297,7 @@ Count packages depending on \texttt{MSnbase}.
 Future developments.
 
 The version of \texttt{MSnbase} used in this manuscritp is version
-\Sexpr{packageVersion("MSnbase")}. The main features presented here
+2.10.0. The main features presented here
 were available since version 2.0. 
 
 

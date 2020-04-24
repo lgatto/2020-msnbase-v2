@@ -15,60 +15,26 @@ prep_data <- function(n,
 
 fls <- prep_data(100)
 
-## ----------------------------------------------------------------------
-## BENCHMARK: Reading time (in seconds) for a 1 file (default
-## settings, i.e. 6103 MS2 spectra for in memory and 1431 MS1 + 6103
-## MS2 spectra for on disk)
-## ----------------------------------------------------------------------
-
-t_read1 <- c(on_disk = system.time(x_dsk <- readMSData(fls[1], mode = "onDisk"))[["elapsed"]],
-             in_mem = system.time(x_mem <- readMSData(fls[1], mode = "inMemory"))[["elapsed"]])
-
-save(t_read1, file = "bench_t_read1.rda")
-
-## > t_read1
-## on_disk  in_mem 
-##  15.304  78.353
-
 
 ## ----------------------------------------------------------------------
-## BENCHMARK: Reading time (in seconds) for a 1, 2, 5, 10, ... files
-## (default settings, i.e. 6103 MS2 spectra for in memory and 1431 MS1
-## + 6103 MS2 spectra for on disk)
+## BENCHMARK:
+## - Reading time (in seconds) for a 1, 5, 10, ... files (default
+##   settings, i.e. 6103 MS2 spectra for in memory and 1431 MS1 + 6103
+##   MS2 spectra for on disk)
+## - Memory consumption, compareing on disk and in memory for 1, 5,
+##   10, ... files
 ## ----------------------------------------------------------------------
 n <- c(1, 5, 10)
-t_read <- sapply(n, function(i) {
+time_sz <- lapply(n, function(i) {
     f <- fls[seq_len(i)]
-    c(on_disk = system.time(readMSData(f, mode = "onDisk"))[["elapsed"]],
-      in_mem = system.time(readMSData(f, mode = "inMemory"))[["elapsed"]])
+    time <- c(in_mem = system.time(x_mem <- readMSData(f, mode = "inMemory"))[["elapsed"]],
+              on_disk = system.time(x_dsk <- readMSData(f, mode = "onDisk"))[["elapsed"]])
+    sz <- c(in_mem = pryr::object_size(x_mem),
+            on_disk = pryr::object_size(x_dsk))
+    cbind(time, sz, n = i)
 })
 
-save(t_read, file = "bench_t_read.rda")
-
-## > t_read
-##           [,1]    [,2]    [,3]
-## on_disk 14.902  74.757 151.029
-## in_mem  68.931 349.450 724.357
-
-
-## ----------------------------------------------------------------------
-## BENCHMARK: Memory consumption, compareing on disk and in memory for
-## 1, 5, 10, ... files
-## ----------------------------------------------------------------------
-n <- c(1, 5, 10)
-sz <- sapply(n, function(i) {
-    f <- fls[seq_len(i)]
-    c(in_mem = pryr::object_size(readMSData(f, mode = "inMemory")),
-      on_disk = pryr::object_size(readMSData(f, mode = "onDisk")))
-})
-
-save(sz, file = "bench_sz.rda")
-
-## > sz
-##             [,1]      [,2]      [,3]
-## in_mem  33168440 165761248 331429808
-## on_disk  3458504  12138560  22988848
-
+save(time_sz, file = "bench_time_sz.rda")
 
 ## ----------------------------------------------------------------------
 ## BENCHMARK: filtering
@@ -113,19 +79,6 @@ t_filt <- microbenchmark(dsk = filter_ms(x_dsk),
 save(t_filt, file = "bench_t_filt.rda")
 
 autoplot(t_filt)
-
-## ----------------------------------------------------------------------
-## BENCHMARK: accessing 1 spectrum
-## ----------------------------------------------------------------------
-
-t_access1 <- microbenchmark(mem = x_mem[[1]],
-                            dsk = x_dsk[[1]],
-                            times = 10)
-
-save(t_access1, file = "bench_t_access1.rda")
-
-autoplot(t_access1)
-
 
 ## ----------------------------------------------------------------------
 ## BENCHMARK: accessing 1, 10, ..., all spectra
