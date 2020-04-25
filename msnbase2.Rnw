@@ -101,6 +101,7 @@ knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
 library("xtable")
 library("microbenchmark")
 library("tidyverse")
+library("patchwork")
 @
 
 \section{Introduction}
@@ -164,10 +165,10 @@ raw_dsk <- readMSData("file.mzML", mode = "onDisk")
 The former is the legacy storage mode, implemented in the first
 version of the package, that loads all the raw data and the metadata
 in memory. This solution doesn't scale for modern large dataset, and
-was complemented by the on-disk backend, that only load
-metadata in memory and accesses the spectra in the original files when
+was complemented by the on-disk backend, that only load metadata in
+memory and accesses the spectra in the original files when
 needed. There are two direct benefits using the on-disk
-backend. Table \ref{tab:bench1} shows 4-fold faster reading times
+backend. Figure \ref{fig:bench1} shows 4-fold faster reading times
 (left) and 10-fold smaller memory footprint (right).
 
 <<time_sz>>=
@@ -177,20 +178,47 @@ sz <- sapply(time_sz, function(x) x[, "sz"])
 colnames(sz) <- colnames(time) <- c(1, 5, 10)
 rownames(sz) <- rownames(time) <- c("in-memory", "on-disk")
 sz <- round(sz/(1014^2), 2)
-print(xtable(time), floating = FALSE, file = "tabs/t_read.tex")
-print(xtable(sz), floating = FALSE, include.rownames = FALSE, file = "tabs/sz.tex")
+
+p1 <- data.frame(time) %>% 
+    rownames_to_column() %>% 
+    pivot_longer(names_to = "files", 
+                 values_to = "time", 
+                 -rowname) %>% 
+    rename(backend = rowname) %>% 
+    mutate(files = as.numeric(sub("X", "", files))) %>% 
+    ggplot(aes(x = files, y = time, colour = backend)) + 
+    geom_point() + 
+    geom_line() + 
+    scale_x_continuous(breaks=c(1, 5, 10)) + 
+    ylab("Reading time (s)") + 
+    theme(legend.position = "none")
+
+p2 <- data.frame(sz) %>% 
+    rownames_to_column() %>% 
+    pivot_longer(names_to = "files", 
+                 values_to = "size",
+                 -rowname) %>% 
+    rename(backend = rowname) %>% 
+    mutate(files = as.numeric(sub("X", "", files))) %>% 
+    ggplot(aes(x = files, y = size, colour = backend)) + 
+    geom_point() + 
+    geom_line() + 
+    scale_x_continuous(breaks=c(1, 5, 10)) + 
+    ylab("Object size (MB)") 
 @
 
 
-\begin{table}[ht]
-\centering
-\subfloat[Reading time (s)]{\label{tab:tread}\scalebox{1}{\input{./tabs/t_read}}}\quad
-\subfloat[Object size (MB)]{\label{tab:sz}\scalebox{1}{\input{./tabs/sz}}}
-\caption{Reading time (in seconds) (left) and data size in memory (in
+\begin{figure}[ht]
+  \centering
+<<plot_bench1, out.width = '100%', fig.width = 7, fig.height = 3>>=
+p1 + p2 + plot_annotation(tag_levels = 'a')
+@
+\caption{(a) Reading time (in seconds) and (b) data size in memory (in
   MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
   only) and 6103 MS2 (on-disk and in-memory) spectra. }
-\label{tab:bench1}
-\end{table}
+\label{fig:bench1}
+\end{figure}
+
 
 
 The on-disk backend also offers efficient data manipulation by way of
@@ -210,7 +238,7 @@ x <- x_dsk %>%
 x[precursorIntensity(x) > 11e6, ]
 @
 
-As shown on figure \ref{fig:filt}, this lazy mechanism si
+As shown on figure~\ref{fig:filt}, this lazy mechanism si
 significantly faster than its application on in-memory data.
 
 \begin{figure}[ht]
@@ -228,10 +256,10 @@ The advantageous reading and execution times and memory footprint of
 the on-disk backend are possible by avoiding unnecessary access to the
 raw data. Once access to the spectra M/Z and intensity values become
 mandatory (for example for plotting), then the in-memory backend
-becomes more efficient, as illustrated on figure
-\ref{fig:access}. This gain is maximal when the whole dataset is the
-be accessed (i.e. all spectra are already in memory) and negligeable
-when large fractions of the data need to be subset.
+becomes more efficient, as illustrated on
+figure~\ref{fig:access}. This gain is maximal when the whole dataset
+is the be accessed (i.e. all spectra are already in memory) and
+negligeable when large fractions of the data need to be subset.
 
 \begin{figure}[ht]
   \centering
@@ -256,9 +284,8 @@ tibble(time = microbenchmark:::convert_to_unit(t_access$time, "ms"),
 \end{figure}
 
 
-
-
-Enables large scale data analyses (metabolomics example, see Johannes)
+This new on-disk infrastructure enables large scale data analyses
+using \texttt{MSnbase} (metabolomics example, see Johannes).
 
 \subsection{Prototyping}
 
