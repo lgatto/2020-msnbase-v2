@@ -162,15 +162,6 @@ raw_mem <- readMSData("file.mzML", mode = "inMemory")
 raw_dsk <- readMSData("file.mzML", mode = "onDisk")
 @
 
-The former is the legacy storage mode, implemented in the first
-version of the package, that loads all the raw data and the metadata
-in memory. This solution doesn't scale for modern large dataset, and
-was complemented by the on-disk backend, that only load metadata in
-memory and accesses the spectra in the original files when
-needed. There are two direct benefits using the on-disk
-backend. Figure \ref{fig:bench1} shows 4-fold faster reading times
-(left) and 10-fold smaller memory footprint (right).
-
 <<time_sz>>=
 load("bench_time_sz.rda")
 time <- sapply(time_sz, function(x) x[, "time"])
@@ -179,7 +170,8 @@ colnames(sz) <- colnames(time) <- c(1, 5, 10)
 rownames(sz) <- rownames(time) <- c("in-memory", "on-disk")
 sz <- round(sz/(1014^2), 2)
 
-p1 <- data.frame(time) %>% 
+p_read <- 
+    data.frame(time) %>% 
     rownames_to_column() %>% 
     pivot_longer(names_to = "files", 
                  values_to = "time", 
@@ -191,9 +183,11 @@ p1 <- data.frame(time) %>%
     geom_line() + 
     scale_x_continuous(breaks=c(1, 5, 10)) + 
     ylab("Reading time (s)") + 
+    xlab("Number of files") +
     theme(legend.position = "none")
 
-p2 <- data.frame(sz) %>% 
+p_sz <- 
+    data.frame(sz) %>% 
     rownames_to_column() %>% 
     pivot_longer(names_to = "files", 
                  values_to = "size",
@@ -204,21 +198,71 @@ p2 <- data.frame(sz) %>%
     geom_point() + 
     geom_line() + 
     scale_x_continuous(breaks=c(1, 5, 10)) + 
-    ylab("Object size (MB)") 
+    ylab("Object size (MB)") +
+    xlab("Number of files") +
+    theme(legend.position = "none")    
 @
 
+<<filt>>=
+load("bench_t_filt.rda")
+p_filt <- 
+    tibble(time = microbenchmark:::convert_to_unit(t_filt$time, "ms"),
+           expr = as.character(t_filt$expr)) %>%    
+    mutate(mode = if_else(grepl("mem", expr), "in-memory", "on-disk")) %>%
+    ggplot(aes(x = mode, y = time, fill = mode)) + 
+    ggplot2::geom_violin() + 
+    ggplot2::scale_y_log10() +
+    ylab("Filtering time [millisec]") + 
+    xlab("Backend") +    
+    theme(legend.position = "none")
 
-\begin{figure}[ht]
+@
+
+<<access>>=
+load("bench_t_access.rda")
+p_access <- 
+    tibble(time = microbenchmark:::convert_to_unit(t_access$time, "ms"),
+           expr = as.character(t_access$expr)) %>%
+    mutate(n = sub("^access_.+_", "", expr)) %>%
+    mutate(n = sub("all", 6103, n)) %>%
+    mutate(mode = if_else(grepl("mem", expr), "in-memory", "on-disk")) %>%
+    ggplot(aes(x = n, y = time, fill = mode)) + 
+    ggplot2::geom_violin() + 
+    ggplot2::scale_y_log10() +
+    ylab("Raw data access [millisec]") +
+    xlab("Number of spectra (out of 6103)") +
+    facet_wrap(~ mode) +
+    theme(legend.position = "none")
+@
+
+\begin{figure}[p]
   \centering
-<<plot_bench1, out.width = '100%', fig.width = 7, fig.height = 3>>=
-p1 + p2 + plot_annotation(tag_levels = 'a')
+<<plot_bench>>=
+(p_read + p_sz + p_filt) / p_access + 
+    plot_layout(heights = c(1, 0.75)) + 
+    plot_annotation(tag_levels = 'a') &
+    theme(axis.title = element_text(size = 10))
 @
 \caption{(a) Reading time (in seconds) and (b) data size in memory (in
   MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
-  only) and 6103 MS2 (on-disk and in-memory) spectra. }
-\label{fig:bench1}
+  only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering
+  benchmark assessed over 10 interations on in-memory and on-disk data
+  containing 6103 MS2 spectra.  (d) Access time to spectra for the
+  in-memory (left) and on-disk (right) backends for 1, 10, 100 1000,
+  5000 and all 6103 spectra. On-disk backend: blue. In-memory backend:
+  red. }
+\label{fig:bench}
 \end{figure}
 
+
+The former is the legacy storage mode, implemented in the first
+version of the package, that loads all the raw data and the metadata
+in memory. This solution doesn't scale for modern large dataset, and
+was complemented by the on-disk backend, that only load metadata in
+memory and accesses the spectra in the original files when
+needed. There are two direct benefits using the on-disk
+backend. Figure \ref{fig:bench} shows 4-fold faster reading times (a)
+and 10-fold smaller memory footprint (b).
 
 
 The on-disk backend also offers efficient data manipulation by way of
@@ -238,50 +282,16 @@ x <- x_dsk %>%
 x[precursorIntensity(x) > 11e6, ]
 @
 
-As shown on figure~\ref{fig:filt}, this lazy mechanism si
-significantly faster than its application on in-memory data.
-
-\begin{figure}[ht]
-  \centering
-<<plot_filter, message = FALSE, out.width = '50%', fig.width = 5, fig.height = 3>>=
-load("bench_t_filt.rda")
-ggplot2::autoplot(t_filt)
-@
-\caption{Filtering benchmark assessed over 10 interations on in-memory (top) and on-disk (bottom) data containing 6103 MS2 spectra.}
-\label{fig:filt}
-\end{figure}
-
-
-The advantageous reading and execution times and memory footprint of
-the on-disk backend are possible by avoiding unnecessary access to the
-raw data. Once access to the spectra M/Z and intensity values become
+As shown on figure~\ref{fig:bench} (c), this lazy mechanism si
+significantly faster than its application on in-memory data. The
+advantageous reading and execution times and memory footprint of the
+on-disk backend are possible by avoiding unnecessary access to the raw
+data. Once access to the spectra M/Z and intensity values become
 mandatory (for example for plotting), then the in-memory backend
-becomes more efficient, as illustrated on
-figure~\ref{fig:access}. This gain is maximal when the whole dataset
-is the be accessed (i.e. all spectra are already in memory) and
-negligeable when large fractions of the data need to be subset.
-
-\begin{figure}[ht]
-  \centering
-<<plot_access, message = FALSE, out.width = '75%', fig.width = 5, fig.height = 3>>=
-load("bench_t_access.rda")
-tibble(time = microbenchmark:::convert_to_unit(t_access$time, "ms"),
-       expr = as.character(t_access$expr)) %>%
-    mutate(n = sub("^access_.+_", "", expr)) %>%
-    mutate(n = sub("all", 6103, n)) %>%
-    mutate(mode = if_else(grepl("mem", expr), "in-memory", "on-disk")) %>%
-    ggplot(aes(x = n, y = time, fill = log10(as.numeric(n)))) + 
-    ggplot2::geom_violin() + 
-    ggplot2::scale_y_log10() +
-    ylab("Time [millisec]") +
-    xlab("Number of spectra (out of 6103)") +
-    facet_wrap(~ mode) +
-    theme(legend.position = "none")
-@
-\caption{Access time to spectra for the in-memory (left) and on-disk
-  (right) backends for 1, 10, 100 1000, 5000 and all 6103 spectra.}
-\label{fig:access}
-\end{figure}
+becomes more efficient, as illustrated on figure~\ref{fig:bench}
+(d). This gain is maximal when the whole dataset is the be accessed
+(i.e. all spectra are already in memory) and negligeable when large
+fractions of the data need to be subset.
 
 
 This new on-disk infrastructure enables large scale data analyses

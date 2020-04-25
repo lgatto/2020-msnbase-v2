@@ -211,31 +211,39 @@ on-disk.
 \end{kframe}
 \end{knitrout}
 
+
+
+
+
+
+
+\begin{figure}[p]
+  \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/plot_bench-1} 
+
+\end{knitrout}
+\caption{(a) Reading time (in seconds) and (b) data size in memory (in
+  MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
+  only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering
+  benchmark assessed over 10 interations on in-memory and on-disk data
+  containing 6103 MS2 spectra.  (d) Access time to spectra for the
+  in-memory (left) and on-disk (right) backends for 1, 10, 100 1000,
+  5000 and all 6103 spectra. On-disk backend: blue. In-memory backend:
+  red. }
+\label{fig:bench}
+\end{figure}
+
+
 The former is the legacy storage mode, implemented in the first
 version of the package, that loads all the raw data and the metadata
 in memory. This solution doesn't scale for modern large dataset, and
 was complemented by the on-disk backend, that only load metadata in
 memory and accesses the spectra in the original files when
 needed. There are two direct benefits using the on-disk
-backend. Figure \ref{fig:bench1} shows 4-fold faster reading times
-(left) and 10-fold smaller memory footprint (right).
-
-
-
-
-\begin{figure}[ht]
-  \centering
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=1\linewidth]{figure/plot_bench1-1} 
-
-\end{knitrout}
-\caption{(a) Reading time (in seconds) and (b) data size in memory (in
-  MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
-  only) and 6103 MS2 (on-disk and in-memory) spectra. }
-\label{fig:bench1}
-\end{figure}
-
+backend. Figure \ref{fig:bench} shows 4-fold faster reading times (a)
+and 10-fold smaller memory footprint (b).
 
 
 The on-disk backend also offers efficient data manipulation by way of
@@ -259,41 +267,16 @@ MS2 spectra with a precursor intensity greater than $11 \times 10^6$
 \end{kframe}
 \end{knitrout}
 
-As shown on figure~\ref{fig:filt}, this lazy mechanism si
-significantly faster than its application on in-memory data.
-
-\begin{figure}[ht]
-  \centering
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=0.5\linewidth]{figure/plot_filter-1} 
-
-\end{knitrout}
-\caption{Filtering benchmark assessed over 10 interations on in-memory (top) and on-disk (bottom) data containing 6103 MS2 spectra.}
-\label{fig:filt}
-\end{figure}
-
-
-The advantageous reading and execution times and memory footprint of
-the on-disk backend are possible by avoiding unnecessary access to the
-raw data. Once access to the spectra M/Z and intensity values become
+As shown on figure~\ref{fig:bench} (c), this lazy mechanism si
+significantly faster than its application on in-memory data. The
+advantageous reading and execution times and memory footprint of the
+on-disk backend are possible by avoiding unnecessary access to the raw
+data. Once access to the spectra M/Z and intensity values become
 mandatory (for example for plotting), then the in-memory backend
-becomes more efficient, as illustrated on
-figure~\ref{fig:access}. This gain is maximal when the whole dataset
-is the be accessed (i.e. all spectra are already in memory) and
-negligeable when large fractions of the data need to be subset.
-
-\begin{figure}[ht]
-  \centering
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=0.75\linewidth]{figure/plot_access-1} 
-
-\end{knitrout}
-\caption{Access time to spectra for the in-memory (left) and on-disk
-  (right) backends for 1, 10, 100 1000, 5000 and all 6103 spectra.}
-\label{fig:access}
-\end{figure}
+becomes more efficient, as illustrated on figure~\ref{fig:bench}
+(d). This gain is maximal when the whole dataset is the be accessed
+(i.e. all spectra are already in memory) and negligeable when large
+fractions of the data need to be subset.
 
 
 This new on-disk infrastructure enables large scale data analyses
