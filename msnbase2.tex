@@ -191,12 +191,74 @@ methods.
 
 \section{Software functionality}
 
+In \texttt{MSnbase}, mass spectrometry experiments are handled as
+\texttt{MSnExp} objects. While the implementation is more complex, it
+is useful to schematise a raw data experiment as being composed of raw
+data, i.e. a collection of individual spectra, as well as
+spectra-level metadata. Each spectrum is composed of m/z values and
+associated intensities. The metadata are represented by a table with
+variables along the columns and each row associated to a
+spectrum. Among the metadata available for each spectrum, we there is
+its MS level, acquisition number, retention time, precursor m/z and
+intensity (for MS level 2 and above), and many more. \texttt{MSnbase}
+provides a rich interface to manipulate such objects. The code chunk
+below illustrates such an object as displayed in the R console and an
+enumeration of the metadata.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+> \hlkwd{show}(ms)
+MSn experiment \hlkwd{data} (\hlstr{"OnDiskMSnExp"})
+Object size in memory: 0.54 Mb
+- - - Spectra data - - -
+ MS \hlkwd{level}(s): 1 2 3 
+ Number of spectra: 994 
+ MSn retention times: 45:27 - 47:6 minutes
+- - - Processing information - - -
+Data loaded [Sun Apr 26 15:40:58 2020] 
+ MSnbase version: 2.13.6 
+- - - Meta data  - - -
+phenoData
+  rowNames: MS3TMT11.mzML
+  varLabels: sampleNames
+  varMetadata: labelDescription
+Loaded from:
+  MS3TMT11.mzML 
+protocolData: none
+featureData
+  featureNames: F1.S001 F1.S002 ... \hlkwd{F1.S994} (994 total)
+  fvarLabels: fileIdx spIdx ... \hlkwd{spectrum} (35 total)
+  fvarMetadata: labelDescription
+experimentData: use \hlstr{'\hlkwd{experimentData}(object)'}
+> \hlkwd{fvarLabels}(ms)
+ [1] \hlstr{"fileIdx"}                    \hlstr{"spIdx"}
+ [3] \hlstr{"smoothed"}                   \hlstr{"seqNum"}
+ [5] \hlstr{"acquisitionNum"}             \hlstr{"msLevel"}
+ [7] \hlstr{"polarity"}                   \hlstr{"originalPeaksCount"}
+ [9] \hlstr{"totIonCurrent"}              \hlstr{"retentionTime"}
+[11] \hlstr{"basePeakMZ"}                 \hlstr{"basePeakIntensity"}
+[13] \hlstr{"collisionEnergy"}            \hlstr{"ionisationEnergy"}
+[15] \hlstr{"lowMZ"}                      \hlstr{"highMZ"}
+[17] \hlstr{"precursorScanNum"}           \hlstr{"precursorMZ"}
+[19] \hlstr{"precursorCharge"}            \hlstr{"precursorIntensity"}
+[21] \hlstr{"mergedScan"}                 \hlstr{"mergedResultScanNum"}
+[23] \hlstr{"mergedResultStartScanNum"}   \hlstr{"mergedResultEndScanNum"}
+[25] \hlstr{"injectionTime"}              \hlstr{"filterString"}
+[27] \hlstr{"spectrumId"}                 \hlstr{"centroided"}
+[29] \hlstr{"ionMobilityDriftTime"}       \hlstr{"isolationWindowTargetMZ"}
+[31] \hlstr{"isolationWindowLowerOffset"} \hlstr{"isolationWindowUpperOffset"}
+[33] \hlstr{"scanWindowLowerLimit"}       \hlstr{"scanWindowUpperLimit"}
+[35] \hlstr{"spectrum"}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \subsection{On-disk backend}
 
 The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
-\textit{in-memory} and on-disk. The following code chunk
+\textit{in-memory} and \textit{on-disk}. The following code chunk
 demonstrates how to create two \texttt{MSnExp} objects, tailored to
 manage mass spectrometry experiments, storing data in-memory or
 on-disk.
@@ -239,12 +301,12 @@ on-disk.
 The former is the legacy storage mode, implemented in the first
 version of the package, that loads all the raw data and the metadata
 in memory. This solution doesn't scale for modern large dataset, and
-was complemented by the on-disk backend, that only load metadata in
+was complemented by the on-disk backend, that only loads metadata into
 memory and accesses the spectra in the original files when
-needed. There are two direct benefits using the on-disk
-backend. Figure \ref{fig:bench} shows 4-fold faster reading times (a)
-and 10-fold smaller memory footprint (b).
-
+needed. There are two direct benefits using the on-disk backend,
+namely faster reading and reduced memory footpring. Figure
+\ref{fig:bench} shows 5-fold faster reading times (a) and over a
+10-fold reduction in memory usage (b).
 
 The on-disk backend also offers efficient data manipulation by way of
 \textit{lazy processing}. Operations on the raw data are stored in a
@@ -252,7 +314,7 @@ processing queue and only effectively applied when raw data is
 accessed on disk. As an example, the following short analysis
 pipeline, that can equally be applied to on in-memory or on-disk data
 retains MS2 spectra acquired between 1000 and 3000 seconds, extract
-the M/Z range corresponding to the TMT 6-plex range and focuses on the
+the m/z range corresponding to the TMT 6-plex range and focuses on the
 MS2 spectra with a precursor intensity greater than $11 \times 10^6$
 (the median precursor intensity). 
 
@@ -267,24 +329,69 @@ MS2 spectra with a precursor intensity greater than $11 \times 10^6$
 \end{kframe}
 \end{knitrout}
 
-As shown on figure~\ref{fig:bench} (c), this lazy mechanism si
+As shown on Figure~\ref{fig:bench} (c), this lazy mechanism si
 significantly faster than its application on in-memory data. The
 advantageous reading and execution times and memory footprint of the
 on-disk backend are possible by avoiding unnecessary access to the raw
-data. Once access to the spectra M/Z and intensity values become
+data. Once access to the spectra m/z and intensity values become
 mandatory (for example for plotting), then the in-memory backend
-becomes more efficient, as illustrated on figure~\ref{fig:bench}
+becomes more efficient, as illustrated on Figure~\ref{fig:bench}
 (d). This gain is maximal when the whole dataset is the be accessed
 (i.e. all spectra are already in memory) and negligeable when large
 fractions of the data need to be subset.
-
 
 This new on-disk infrastructure enables large scale data analyses
 using \texttt{MSnbase} (metabolomics example, see Johannes).
 
 \subsection{Prototyping}
 
-See https://github.com/lgatto/msnbase\_boxcar.
+The \texttt{MSnExp} data structure and its interface constitute a
+efficient prototyping environment for computational method
+development. We illustrate this by demonstrating how to implement the
+BoxCar\cite{Meier:2018} acquisition method. In a nutshell, BoxCar
+acquisition aims at improving the detection of intact precursor ions
+by distributing the charge capacity over multiple narrow m/z segments
+and thus limiting the proportion of highly abundant precursors in each
+segment. A full scan is reconstructed by combining the respective
+adjacent segments of the BoxCar acquisitions. The
+\texttt{MSnbaseBoxCar} package\cite{MSnbaseBoxCar} is a small package
+that demonstrates this. The simple method is composed of three steps:
+
+\begin{enumerate}
+
+\item Identify and filter the groups of spectra that represent
+  adjacent BoxCar acquisitions (Figure~\ref{fig:bc}~(b)). This can be
+  done using the `filterString` metadata variable (see code chunk
+  above) that identifies BoxCar spectra by their adjacent M/Z segments
+  with the \texttt{bc\_groups()} function from \texttt{MSnbaseBoxCar}.
+
+\item Remove any signal outside the BoxCar segnments using the
+  \texttt{bc\_zero\_out\_box()} function from \texttt{MSnbaseBoxCar}
+  (Figures~\ref{fig:bc}~(c) and (d)).
+  
+\item Using the \texttt{combineSpectra} function from the
+  \texttt{MSnbase}, combine the cleaned BoxCar spectra into a new,
+  full spectrum (Figure~\ref{fig:bc}~(e)).
+  
+\end{enumerate}
+
+
+
+\begin{figure}[p]
+  \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/plot_boxcar-1} 
+
+\end{knitrout}
+\caption{BoxCar processing with \texttt{MSnbase}. (a) Standard full
+  scan with (b) three corresponding BoxCar scans showing the adjacent
+  segments. Figure (c) shows the overlapping intact BoxCar segments
+  and (d) the same segments after cleaning, i.e. where peaks outside
+  of the segments were removed. The reconstructed full scan is shown
+  on panel (e).}
+\label{fig:bc}
+\end{figure}
 
 \subsection{Visualisation}
 
