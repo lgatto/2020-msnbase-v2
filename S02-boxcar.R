@@ -14,13 +14,11 @@ basename(f)
 x <- readMSData(f, mode = "onDisk") %>%
     filterMz(c(299, 555))
 
-fData(x)$groups <- bc_groups(x)
-xbc <- x[bc_is_boxcar(x)]
-xbc2 <- xbc %>%
-    bc_zero_out_box(offset = 0)
-
-res  <- combineSpectra(xbc,
-                       fcol = "groups",
+x <- bc_groups(x)
+xbc <- filterBoxCar(x)
+xbc2 <- bc_zero_out_box(xbc, offset = 0)
+res  <- combineSpectra(xbc2,
+                       fcol = "bc_groups",
                        method = boxcarCombine)
 
 

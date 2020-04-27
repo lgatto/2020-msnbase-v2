@@ -321,10 +321,10 @@ MS2 spectra with a precursor intensity greater than $11 \times 10^6$
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{x} \hlkwb{<-} \hlstd{x_dsk} \hlopt{%>%}
+\hlstd{ms} \hlkwb{<-} \hlstd{ms} \hlopt{%>%}
     \hlkwd{filterRt}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{1000}\hlstd{,} \hlnum{3000}\hlstd{))} \hlopt{%>%}
     \hlkwd{filterMz}\hlstd{(}\hlnum{120}\hlstd{,} \hlnum{135}\hlstd{)}
-\hlstd{x[}\hlkwd{precursorIntensity}\hlstd{(x)} \hlopt{>} \hlnum{11e6}\hlstd{, ]}
+\hlstd{ms[}\hlkwd{precursorIntensity}\hlstd{(ms)} \hlopt{>} \hlnum{11e6}\hlstd{, ]}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -355,25 +355,42 @@ and thus limiting the proportion of highly abundant precursors in each
 segment. A full scan is reconstructed by combining the respective
 adjacent segments of the BoxCar acquisitions. The
 \texttt{MSnbaseBoxCar} package\cite{MSnbaseBoxCar} is a small package
-that demonstrates this. The simple method is composed of three steps:
+that demonstrates this. The simple method is composed of three steps
+is described below and illustrated with code from
+\texttt{MSnbaseBoxCar} in the following code chunk.
 
 \begin{enumerate}
 
 \item Identify and filter the groups of spectra that represent
-  adjacent BoxCar acquisitions (Figure~\ref{fig:bc}~(b)). This can be
-  done using the `filterString` metadata variable (see code chunk
-  above) that identifies BoxCar spectra by their adjacent M/Z segments
-  with the \texttt{bc\_groups()} function from \texttt{MSnbaseBoxCar}.
-
+  adjacent BoxCar acquisitions (Figure~\ref{fig:bc}~(b)).. This can be
+  done using the `filterString` metadata variable that identifies
+  BoxCar spectra by their adjacent M/Z segments with the
+  \texttt{bc\_groups()} function and filtering relevant spectra with
+  the \texttt{filterBoxCar()}.
+  
 \item Remove any signal outside the BoxCar segnments using the
   \texttt{bc\_zero\_out\_box()} function from \texttt{MSnbaseBoxCar}
   (Figures~\ref{fig:bc}~(c) and (d)).
-  
+
+
 \item Using the \texttt{combineSpectra} function from the
   \texttt{MSnbase}, combine the cleaned BoxCar spectra into a new,
   full spectrum (Figure~\ref{fig:bc}~(e)).
-  
+
 \end{enumerate}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{raw_bc} \hlopt{%>%}
+    \hlkwd{bc_groups}\hlstd{()} \hlopt{%>%}       \hlcom{## identify BoxCar groups (bc_groups)}
+    \hlkwd{filterBoxCar}\hlstd{()} \hlopt{%>%}    \hlcom{## keep only BoxCar spectra}
+    \hlkwd{bc_zero_out_box}\hlstd{()} \hlopt{%>%} \hlcom{## remove signal outside of BoxCar segments}
+    \hlkwd{combineSpectra}\hlstd{(}\hlkwc{fcol} \hlstd{=} \hlstr{"bc_groups"}\hlstd{,} \hlcom{## reconstruct full spectrum}
+                   \hlkwc{method} \hlstd{= boxcarCompbine)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 
 
@@ -393,9 +410,17 @@ that demonstrates this. The simple method is composed of three steps:
 \label{fig:bc}
 \end{figure}
 
+All the functions for the processing of BoxCar spectra and segments in
+\texttt{MSnbaseBoxCar} were developed using existing functionality
+implemented in \texttt{MSnbase}, illustrating the flexibility and
+adaptability of the \texttt{MSnbase} package for computational mass
+spectrometry method development.
+
 \subsection{Visualisation}
 
-Examples: 3D MSmap, boxcar, centroiding vignette
+The R environment is well known for the quality of its visualiation
+capacity. This also holds true for mass spectrometry
+data~\cite{Gatto:2015,protViz}.
 
 
 \section{Discussion}

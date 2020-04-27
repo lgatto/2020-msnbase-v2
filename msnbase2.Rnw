@@ -334,10 +334,10 @@ MS2 spectra with a precursor intensity greater than $11 \times 10^6$
 (the median precursor intensity). 
 
 <<filter, eval = FALSE, echo = TRUE>>=
-x <- x_dsk %>%
+ms <- ms %>%
     filterRt(c(1000, 3000)) %>%
     filterMz(120, 135)
-x[precursorIntensity(x) > 11e6, ]
+ms[precursorIntensity(ms) > 11e6, ]
 @
 
 As shown on Figure~\ref{fig:bench} (c), this lazy mechanism si
@@ -366,25 +366,38 @@ and thus limiting the proportion of highly abundant precursors in each
 segment. A full scan is reconstructed by combining the respective
 adjacent segments of the BoxCar acquisitions. The
 \texttt{MSnbaseBoxCar} package\cite{MSnbaseBoxCar} is a small package
-that demonstrates this. The simple method is composed of three steps:
+that demonstrates this. The simple method is composed of three steps
+is described below and illustrated with code from
+\texttt{MSnbaseBoxCar} in the following code chunk.
 
 \begin{enumerate}
 
 \item Identify and filter the groups of spectra that represent
-  adjacent BoxCar acquisitions (Figure~\ref{fig:bc}~(b)). This can be
-  done using the `filterString` metadata variable (see code chunk
-  above) that identifies BoxCar spectra by their adjacent M/Z segments
-  with the \texttt{bc\_groups()} function from \texttt{MSnbaseBoxCar}.
-
+  adjacent BoxCar acquisitions (Figure~\ref{fig:bc}~(b)).. This can be
+  done using the `filterString` metadata variable that identifies
+  BoxCar spectra by their adjacent M/Z segments with the
+  \texttt{bc\_groups()} function and filtering relevant spectra with
+  the \texttt{filterBoxCar()}.
+  
 \item Remove any signal outside the BoxCar segnments using the
   \texttt{bc\_zero\_out\_box()} function from \texttt{MSnbaseBoxCar}
   (Figures~\ref{fig:bc}~(c) and (d)).
-  
+
+
 \item Using the \texttt{combineSpectra} function from the
   \texttt{MSnbase}, combine the cleaned BoxCar spectra into a new,
   full spectrum (Figure~\ref{fig:bc}~(e)).
-  
+
 \end{enumerate}
+
+<<bc1, echo=TRUE, eval=FALSE>>=
+raw_bc %>% 
+    bc_groups() %>%       ## identify BoxCar groups (bc_groups)
+    filterBoxCar() %>%    ## keep only BoxCar spectra
+    bc_zero_out_box() %>% ## remove signal outside of BoxCar segments
+    combineSpectra(fcol = "bc_groups", ## reconstruct full spectrum
+                   method = boxcarCompbine)
+@  
 
 
 
@@ -409,9 +422,17 @@ p1 + p2 + p3 + p4 +
 \label{fig:bc}
 \end{figure}
 
+All the functions for the processing of BoxCar spectra and segments in
+\texttt{MSnbaseBoxCar} were developed using existing functionality
+implemented in \texttt{MSnbase}, illustrating the flexibility and
+adaptability of the \texttt{MSnbase} package for computational mass
+spectrometry method development.
+
 \subsection{Visualisation}
 
-Examples: 3D MSmap, boxcar, centroiding vignette
+The R environment is well known for the quality of its visualiation
+capacity. This also holds true for mass
+spectrometry\cite{Gatto:2015,protViz}. 
 
 
 \section{Discussion}
