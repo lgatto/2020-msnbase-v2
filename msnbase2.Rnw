@@ -11,44 +11,6 @@
 }
 \makeatother
 
-%% \definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-%% \newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-%% \newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-%% \newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-%% \newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-%% \newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-%% \newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-%% \newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-%% \newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-%% \newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-%% \let\hlipl\hlkwb
-
-%% \usepackage{framed}
-%% \makeatletter
-%% \newenvironment{kframe}{%
-%%  \def\at@end@of@kframe{}%
-%%  \ifinner\ifhmode%
-%%   \def\at@end@of@kframe{\end{minipage}}%
-%%   \begin{minipage}{\columnwidth}%
-%%  \fi\fi%
-%%  \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
-%%  \colorbox{shadecolor}{##1}\hskip-\fboxsep
-%%      % There is no \\@totalrightmargin, so:
-%%      \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
-%%  \MakeFramed {\advance\hsize-\width
-%%    \@totalleftmargin\z@ \linewidth\hsize
-%%    \@setminipage}}%
-%%  {\par\unskip\endMakeFramed%
-%%  \at@end@of@kframe}
-%% \makeatother
-
-%% \usepackage{xcolor}
-
-%% \definecolor{shadecolor}{rgb}{.97, .97, .97}
-%% \definecolor{messagecolor}{rgb}{0, 0, 0}
-%% \definecolor{warningcolor}{rgb}{1, 0, 1}
-%% \definecolor{errorcolor}{rgb}{1, 0, 0}
-%% \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{subfig}
 \usepackage{graphicx}
@@ -76,7 +38,7 @@
 
 
 \title[MSnbase version 2]
-  {\texttt{MSnbase}, efficient R-based access and manipulation of raw mass spectrometry data}
+  {\texttt{MSnbase}, efficient R-based processing and visualisation of raw mass spectrometry data}
 
 \abbreviations{}
 \keywords{Bioconductor, mass spectrometry, software, reproducible research} %% up to 10 keywords
@@ -107,43 +69,42 @@ library("patchwork")
 \section{Introduction}
 
 Mass spectrometry is a powerful technology to assays chemical and
-biological samples. It is used routinely, with well characterised
+biological samples. It is used routinely with well characterised
 protocol, as well a development platform, to improve on existing
-methods and devise new ones to analyse ever more complex sample in
-greater details. The complexity and diversity of mass spectrometry
-yields data that is itself complex and often times of considerable
-size, that requires non trivial processing before producing
-interpretable results. This is particularly relevant, and can
-constitue a significant challenge for method developers that, in
+methods and devise new ones. The complexity and diversity of mass
+spectrometry yields data that is itself complex and often times of
+considerable size, that requires non trivial processing before
+producing interpretable results. This is particularly relevant, and
+can constitute a significant challenge for method developers: in
 addition to the development of sample processing and mass spectrometry
-methods, need to process and analyse these new data to demonstrate the
-improvement in their technical and analytical work.
-
+methods, there is a need to process, analyse, interpret and assess
+these new data to demonstrate the improvement in their technical and
+analytical workflows.
 
 There exists a very diverse catalogue of software tools to explore,
 process and interpret mass spectrometry data. These range from low
-level software libraries such as vendor libraries, jmzML (ref),
-proteowizard (ref), ... that are aimed at programmers to develop new
-applications, to user-oriented applications, such as
-ProteomeDiscoverer, MaxQuant, ... that provide a limited and fixed set
-of functionality. The former are used through application programming
-interfaces exclusively, while the latter generally featuring graphical
-user interfaces (GUI).
-
-TODO: Give examples of libraries re-used in user/gui focused
-application...
-
+level software libraries that are aimed at programmers to develop new
+applications, to user-oriented applications. Example of software
+libraries include Java-based jmzML~\cite{Cote:2010} or C/C++-based
+ProteoWizard~\cite{Chambers:2012}, that are used as application
+programming interfaces. ProteomeDiscoverer (Thermo Scientific),
+MaxQuant~\cite{Cox:2008} and PeptideShaker~\cite{Vaudel:2015} are
+among the most widely user-centric application. They generally provide
+a limited and fixed set of functionality featuring often advanced
+graphical user interfaces (GUI).
 
 In this software note, we present version 2 of the \texttt{MSnbase}
 \cite{Gatto:2012} software package, available from the
-Bioconductor~\cite{Huber:2015} project since 2011. \texttt{MSnbase}
-offers a platform that lies between low level libraries and end-use
-software. It provides a flexible command line environment for
-metabolomics and proteomics mass spectrometry-based application, that
+Bioconductor~\cite{Huber:2015} project since 2011. \texttt{MSnbase},
+like other Python-based software packages such as
+{pyOpenMS}~\cite{Rost:2014}, spectrum\_utils~\cite{Bittremieux:2020}
+or Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies
+between low level libraries and end-use software. \texttt{MSnbase}
+provides a flexible R~\cite{R} command line environment for
+metabolomics and proteomics mass spectrometry-based application. It
 allows a detailed step-by-step processing, analysis and exploration of
 the data and development of novel computational mass spectrometry
 methods.
-
 
 \section{Software functionality}
 
@@ -154,12 +115,12 @@ data, i.e. a collection of individual spectra, as well as
 spectra-level metadata. Each spectrum is composed of m/z values and
 associated intensities. The metadata are represented by a table with
 variables along the columns and each row associated to a
-spectrum. Among the metadata available for each spectrum, we there is
-its MS level, acquisition number, retention time, precursor m/z and
-intensity (for MS level 2 and above), and many more. \texttt{MSnbase}
-provides a rich interface to manipulate such objects. The code chunk
-below illustrates such an object as displayed in the R console and an
-enumeration of the metadata.
+spectrum. Among the metadata available for each spectrum, there are MS
+level, acquisition number, retention time, precursor m/z and intensity
+(for MS level 2 and above), and many more. \texttt{MSnbase} provides a
+rich interface to manipulate such objects. The code chunk below
+illustrates such an object as displayed in the R console and an
+enumeration of the metadata fields.
 
 <<msnexp, echo = TRUE, eval = FALSE>>=
 > show(ms)
@@ -206,11 +167,13 @@ experimentData: use 'experimentData(object)'
 [35] "spectrum"
 @
 
-We will also illustrate how \texttt{MSnbase} makes use of the
-forward-pipe operator (\texttt{\%>\%}) defined in the
-\texttt{magrittr} package. This operator has proved useful to develop
-non-trivial pipelines by combining individual functions into easily
-readable operations.
+In the following sections, we will describe demonstrate how
+\texttt{MSnbase} effichiently manages large raw mass spectrometry data
+and how it is used for data processing and visualisation. We will also
+illustrate how it makes use of the forward-pipe operator
+(\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
+operator has proved useful to develop non-trivial analyses by
+combining individual functions into easily readable pipelines.
 
 \subsection{On-disk backend}
 
@@ -382,7 +345,7 @@ is described below and illustrated with code from
 \item Identify and filter the groups of spectra that represent
   adjacent BoxCar acquisitions (Figure~\ref{fig:bc}~(b)).. This can be
   done using the `filterString` metadata variable that identifies
-  BoxCar spectra by their adjacent M/Z segments with the
+  BoxCar spectra by their adjacent m/z segments with the
   \texttt{bc\_groups()} function and filtering relevant spectra with
   the \texttt{filterBoxCar()}.
   
@@ -445,7 +408,7 @@ conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
 the efficiency of raw data processing. Figure \ref{fig:cent} compares
 the raw MS profile data for the serine and the same data after
-smoothing, centroiding and M/Z refinement. Detailed execution and
+smoothing, centroiding and m/z refinement. Detailed execution and
 description of these operations can be found in the \emph{MSnbase:
   centroiding of profile-mode MS data} \texttt{MSnbase} vignette.
 
@@ -461,14 +424,14 @@ serine_proc <- ms %>%
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{./figure/centroiding.pdf}
-  \caption{Visualisation of data smoothing and M/Z refinement using
+  \caption{Visualisation of data smoothing and m/z refinement using
     \texttt{MSnbase}. (a) Raw MS profile data for serine. Upper panel
     shows the base peak chromatogram (BPC), lower panel the individual
-    signals in the retention time -- M/Z space. The horizontal dashed
-    red line indicates the theoretical M/Z of the [M+H]+ adduct of
-    serine. (b) Smoothed and centroided data for serine with M/Z
+    signals in the retention time -- m/z space. The horizontal dashed
+    red line indicates the theoretical m/z of the [M+H]+ adduct of
+    serine. (b) Smoothed and centroided data for serine with m/z
     refinement. The horizontal red dashed line indicates the
-    theoretical M/Z for the [M+H]+ ion and the vertical red dotted
+    theoretical m/z for the [M+H]+ ion and the vertical red dotted
     line the position of the maximum signal. }
   \label{fig:cent}
 \end{figure}
@@ -481,17 +444,22 @@ contributors\cite{contribs} that added various features, some
 particularly significant ones such as the on-disk backend described
 above. According to the package's Bioconductor page, there are 36
 Bioconductor packages that depend, import or suggest it. Among these
-are \texttt{pRoloc}~\cite{Gatto:2014a}, \texttt{DAPAR} and
-\texttt{ProStaR}~\cite{Wieczorek:2017},
-\texttt{RMassBank}~\cite{Stravs:2013},
+are \texttt{pRoloc}~\cite{Gatto:2014a} to analyse mass
+spectrometry-based spatial proteomics data,
 \texttt{msmsTests}~\cite{msmsTests}, \texttt{DEP}~\cite{Zhang:2018},
-\texttt{MSstatsQC}~\cite{Dogu:2017} and the widerly used
-\texttt{xcms}~\cite{Smith:2006}. \texttt{MSnbase} is also used in
-packages that are not on Bioconductor, such as
-IsoProt~\cite{Griss:2019}, for examples. The package currently ranks
-101 out of 1823 packages based on the monthly downloads from unique IP
-addresses, tallying over 1000 downloads from unique IP addresses each
-months.
+\texttt{DAPAR} and \texttt{ProStaR}~\cite{Wieczorek:2017} for the
+statistical analysis for quantitative proteomics data,
+\texttt{RMassBank}~\cite{Stravs:2013} to process metabolomics tandem
+MS files and build MassBank records,
+\texttt{MSstatsQC}~\cite{Dogu:2017} for longitudinal system
+suitability monitoring and quality control of targeted proteomic
+experiments and the widely used \texttt{xcms}~\cite{Smith:2006} packge
+for the processing and analysis of metabolomics data. \texttt{MSnbase}
+is also used in non-R/Bioconductor software, such as for example
+IsoProt~\cite{Griss:2019}, that provides a reproducible workflow for
+iTRAQ/TMT experiments. \texttt{MSnbase} currently ranks 101 out of
+1823 packages based on the monthly downloads from unique IP addresses,
+tallying over 1000 downloads from unique IP addresses each months.
 
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
@@ -502,20 +470,16 @@ package GitHub page. The package provides several sample and
 benchmarking datasets, and relies on other dedicated
 \textit{experiment packages} such as \texttt{msdata}~\cite{msdata} for
 raw data or \texttt{pRolocdata}~\cite{Gatto:2014a} for quantiative
-data.
+data. \texttt{MSnbase} is available on Windows, Mac OS and Linux under
+the open source Artistic 2.0 license and easily installable using
+standard installation procedures.
 
-\texttt{MSnbase} is available on Windows, Mac OS and Linux under the
-open source Artistic 2.0 license and easily installable using standard
-installation procedures.
-
-
-Future developments.
 
 <<version>>=
 v <- packageVersion("MSnbase")
 @
 
-The version of \texttt{MSnbase} used in this manuscritp is version
+The version of \texttt{MSnbase} used in this manuscript is
 \Sexpr{v}. The main features presented here were available since
 version 2.0.
 
