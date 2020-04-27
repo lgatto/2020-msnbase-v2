@@ -205,6 +205,12 @@ experimentData: use 'experimentData(object)'
 [35] "spectrum"
 @
 
+We will also illustrate how \texttt{MSnbase} makes use of the
+forward-pipe operator (\texttt{\%>\%}) defined in the
+\texttt{magrittr} package. This operator has proved useful to develop
+non-trivial pipelines by combining individual functions into easily
+readable operations.
+
 \subsection{On-disk backend}
 
 The main feature in version 2 of the \texttt{MSnbase} package was the
@@ -428,6 +434,7 @@ implemented in \texttt{MSnbase}, illustrating the flexibility and
 adaptability of the \texttt{MSnbase} package for computational mass
 spectrometry method development.
 
+
 \subsection{Visualisation}
 
 The R environment is well known for the quality of its visualiation
@@ -435,8 +442,33 @@ capacity. This also holds true for mass
 spectrometry\cite{Gatto:2015,protViz,Pviz,Bemis:2015}. Here, we
 conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
-the efficiency of raw data processing. 
+the efficiency of raw data processing. Figure \ref{fig:cent} compares
+the raw MS profile data for the serine and the same data after
+smoothing, centroiding and M/Z refinement.
 
+<<serine_processing, echo=TRUE, eval=FALSE>>=
+serine_mz <- 106.049871
+serine_proc <- ms %>%
+    smooth(method = "SavitzkyGolay", halfWindowSize = 4L) %>% 
+    pickPeaks(refineMz = "descendPeak") %>%
+    filterRt(c(serine_mz - 0.01, serine_mz + 0.01)) %>%
+    filterMz(c(175, 187))
+@
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{./figure/centroiding.pdf}
+  \caption{Visualisation of data smoothing and M/Z refinement using
+    \texttt{MSnbase}. (a) Raw MS profile data for serine. Upper panel
+    shows the base peak chromatogram (BPC), lower panel the individual
+    signals in the retention time -- M/Z space. The horizontal dashed
+    red line indicates the theoretical M/Z of the [M+H]+ adduct of
+    serine. (b) Smoothed and centroided data for serine with M/Z
+    refinement. The horizontal red dashed line indicates the
+    theoretical M/Z for the [M+H]+ ion and the vertical red dotted
+    line the position of the maximum signal. }
+  \label{fig:cent}
+\end{figure}
 
 \section{Discussion}
 
