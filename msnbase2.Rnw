@@ -135,7 +135,8 @@ application...
 
 
 In this software note, we present version 2 of the \texttt{MSnbase}
-\cite{Gatto:2012} R/Bioconductor software package. \texttt{MSnbase}
+\cite{Gatto:2012} software package, available from the
+Bioconductor~\cite{Huber:2015} project since 2011. \texttt{MSnbase}
 offers a platform that lies between low level libraries and end-use
 software. It provides a flexible command line environment for
 metabolomics and proteomics mass spectrometry-based application, that
@@ -444,7 +445,9 @@ conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
 the efficiency of raw data processing. Figure \ref{fig:cent} compares
 the raw MS profile data for the serine and the same data after
-smoothing, centroiding and M/Z refinement.
+smoothing, centroiding and M/Z refinement. Detailed execution and
+description of these operations can be found in the \emph{MSnbase:
+  centroiding of profile-mode MS data} \texttt{MSnbase} vignette.
 
 <<serine_processing, echo=TRUE, eval=FALSE>>=
 serine_mz <- 106.049871
@@ -472,34 +475,49 @@ serine_proc <- ms %>%
 
 \section{Discussion}
 
-To address (from guidelines):
+The first public commit to the \texttt{MSnbase} GitHub repository was
+in October 2010. Since then, the package benefited from 12
+contributors\cite{contribs} that added various features, some
+particularly significant ones such as the on-disk backend described
+above. According to the package's Bioconductor page, there are 36
+Bioconductor packages that depend, import or suggest it. Among these
+are \texttt{pRoloc}~\cite{Gatto:2014a}, \texttt{DAPAR} and
+\texttt{ProStaR}~\cite{Wieczorek:2017},
+\texttt{RMassBank}~\cite{Stravs:2013},
+\texttt{msmsTests}~\cite{msmsTests}, \texttt{DEP}~\cite{Zhang:2018},
+\texttt{MSstatsQC}~\cite{Dogu:2017} and the widerly used
+\texttt{xcms}~\cite{Smith:2006}. \texttt{MSnbase} is also used in
+packages that are not on Bioconductor, such as
+IsoProt~\cite{Griss:2019}, for examples. The package currently ranks
+101 out of 1823 packages based on the monthly downloads from unique IP
+addresses, tallying over 1000 downloads from unique IP addresses each
+months.
 
-\begin{itemize}
+As is custom with Bioconductor packages, \texttt{MSnbase} comes with
+ample documentation. Every user-accessible function is documented in a
+dedicated manual page. In addition, the package offers 5 vignettes,
+including one aimed at developers. Question from users and developers
+are answered on the Bioconductor support forum as well as on the
+package GitHub page. The package provides several sample and
+benchmarking datasets, and relies on other dedicated
+\textit{experiment packages} such as \texttt{msdata}~\cite{msdata} for
+raw data or \texttt{pRolocdata}~\cite{Gatto:2014a} for quantiative
+data.
 
-\item{potential for reuse}: see
-  \cite{Smith:2006,Wieczorek:2017,Griss:2019} for examples.
-\item{general limitations}
-\item{system limitations}
-\item{end-user documentation}
-\item{developer documentation}
-\item{sample data}
-\item{benchmark data set}
-\item{availability}
-\item{license information}
-\item{system requirements}
+\texttt{MSnbase} is available on Windows, Mac OS and Linux under the
+open source Artistic 2.0 license and easily installable using standard
+installation procedures.
 
-\end{itemize}
-
-Collaborative development, 11 contributors since creation (see blog
-post).
-
-Count packages depending on \texttt{MSnbase}.
 
 Future developments.
 
+<<version>>=
+v <- packageVersion("MSnbase")
+@
+
 The version of \texttt{MSnbase} used in this manuscritp is version
-2.10.0. The main features presented here
-were available since version 2.0. 
+\Sexpr{v}. The main features presented here were available since
+version 2.0.
 
 
 
@@ -511,8 +529,6 @@ improvement of the package. The authors declare no conflict of
 interest.
 
 \end{acknowledgement}
-
-
 
 %% \begin{suppinfo} %% Supporting Information
 %%
