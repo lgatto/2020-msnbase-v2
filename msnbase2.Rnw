@@ -488,7 +488,7 @@ version 2.0.
 \begin{acknowledgement}
 
 The authors thank the various contributors and users who have provided
-constructuve input and feedback that have helped, over the years, the
+constructive input and feedback that have helped, over the years, the
 improvement of the package. The authors declare no conflict of
 interest.
 
