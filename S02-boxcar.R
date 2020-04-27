@@ -43,7 +43,20 @@ p4 <- plot(res[[1]], plot = FALSE) +
     labs(title = element_text(""))
 
 
-save(p1, p2, p3, p4, file = "boxcar.rda")
 
 
+## 3D MS map
+x <- readMSData(f, mode = "onDisk") %>%    
+    bc_groups()
+## use MS level to draw the full and BoxCar spectra in different
+## colours
+fData(x)$msLevel <- ifelse(is.na(fData(x)$bc_groups), 1, 2)
 
+map <- MSmap(x, 1:12, 200, 1000, .005)
+
+lattice::trellis.par.set("axis.line",
+                         list(col = NA,lty = 1,lwd = 1))
+pmap <- plot3D(map)
+
+
+save(p1, p2, p3, p4, pmap, file = "boxcar.rda")

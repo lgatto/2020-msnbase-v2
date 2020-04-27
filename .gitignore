@@ -5,4 +5,5 @@ acs-msnbase2.bib
 msnbase2.bbl
 msnbase2.blg
 data
-figure
+figure/plot_bench-1.pdf
+figure/plot_boxcar-1.pdf

@@ -391,12 +391,12 @@ is described below and illustrated with code from
 \end{enumerate}
 
 <<bc1, echo=TRUE, eval=FALSE>>=
-raw_bc %>% 
-    bc_groups() %>%       ## identify BoxCar groups (bc_groups)
-    filterBoxCar() %>%    ## keep only BoxCar spectra
-    bc_zero_out_box() %>% ## remove signal outside of BoxCar segments
-    combineSpectra(fcol = "bc_groups", ## reconstruct full spectrum
-                   method = boxcarCompbine)
+bc <- readMSData("boxcar.mzML", mode = "onDisk") %>%
+      bc_groups() %>%       ## identify BoxCar groups (bc_groups)
+      filterBoxCar() %>%    ## keep only BoxCar spectra
+      bc_zero_out_box() %>% ## remove signal outside of BoxCar segments
+      combineSpectra(fcol = "bc_groups", ## reconstruct full spectrum
+                     method = boxcarCompbine)
 @  
 
 
@@ -432,7 +432,10 @@ spectrometry method development.
 
 The R environment is well known for the quality of its visualiation
 capacity. This also holds true for mass
-spectrometry\cite{Gatto:2015,protViz}. 
+spectrometry\cite{Gatto:2015,protViz,Pviz,Bemis:2015}. Here, we
+conclude the overview of version 2 of the \texttt{MSnbase} package by
+highlighting the flexibility of the software to visualise and assess
+the efficiency of raw data processing. 
 
 
 \section{Discussion}
@@ -442,7 +445,7 @@ To address (from guidelines):
 \begin{itemize}
 
 \item{potential for reuse}: see
-  \cite{Wieczorek:2017,Griss:2019,Smith:2006} for examples.
+  \cite{Smith:2006,Wieczorek:2017,Griss:2019} for examples.
 \item{general limitations}
 \item{system limitations}
 \item{end-user documentation}
