@@ -91,20 +91,19 @@ programming interfaces. ProteomeDiscoverer (Thermo Scientific),
 MaxQuant~\cite{Cox:2008} and PeptideShaker~\cite{Vaudel:2015} are
 among the most widely user-centric application. They generally provide
 a limited and fixed set of functionality featuring often advanced
-graphical user interfaces (GUI).
+graphical user interfaces.
 
 In this software note, we present version 2 of the \texttt{MSnbase}
 \cite{Gatto:2012} software package, available from the
-Bioconductor~\cite{Huber:2015} project since 2011. \texttt{MSnbase},
-like other Python-based software packages such as
-{pyOpenMS}~\cite{Rost:2014}, spectrum\_utils~\cite{Bittremieux:2020}
-or Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies
-between low level libraries and end-use software. \texttt{MSnbase}
-provides a flexible R~\cite{R} command line environment for
-metabolomics and proteomics mass spectrometry-based application. It
-allows a detailed step-by-step processing, analysis and exploration of
-the data and development of novel computational mass spectrometry
-methods.
+Bioconductor~\cite{Huber:2015} project. \texttt{MSnbase}, like other
+Python-based software packages such as {pyOpenMS}~\cite{Rost:2014},
+spectrum\_utils~\cite{Bittremieux:2020} or
+Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
+low level libraries and end-use software. \texttt{MSnbase} provides a
+flexible R~\cite{R} command line environment for metabolomics and
+proteomics mass spectrometry-based application. It allows a detailed
+step-by-step processing, analysis and exploration of the data and
+development of novel computational mass spectrometry methods.
 
 \section{Software functionality}
 
