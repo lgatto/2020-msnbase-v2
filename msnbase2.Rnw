@@ -53,15 +53,14 @@
   We present version 2 of the \texttt{MSnbase} R/Bioconductor
   package. \texttt{MSnbase} provides infrastructure for the
   manipulation, processing and visualisation of mass spectrometry
-  data. Here we present how the new \textit{on-disk} infrastructure
-  allows the handling of hundreds on commodity hardware and present
-  some application of the package.
+  data. We focus on the new \textit{on-disk} infrastructure, that
+  allows the handling of large raw mass spectrometry experiment on
+  commodity hardware and illustrate how the package is used for data
+  processing, method development and visualisation.
 \end{abstract}
 
 <<setup, include = FALSE, message = FALSE>>=
 knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
-library("xtable")
-library("microbenchmark")
 library("tidyverse")
 library("patchwork")
 @
@@ -439,6 +438,14 @@ serine_proc <- ms %>%
 
 \section{Discussion}
 
+We have presented here some some important functionality of the
+version 2 of the \texttt{MSnbase} package. The new on-disk
+infrastructure enables large scale data analyses~\cite{Nothias:2020}
+using \texttt{MSnbase} or other packages that rely on it such as
+\texttt{xcms}. We have also illustrated how \texttt{MSnbase} can be
+used for standard data analysis and visualisation, and how it can be
+used for method development and prototyping.
+
 The first public commit to the \texttt{MSnbase} GitHub repository was
 in October 2010. Since then, the package benefited from 12
 contributors\cite{contribs} that added various features, some
@@ -465,7 +472,7 @@ tallying over 1000 downloads from unique IP addresses each months.
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
 dedicated manual page. In addition, the package offers 5 vignettes,
-including one aimed at developers. Question from users and developers
+including one aimed at developers. Questions from users and developers
 are answered on the Bioconductor support forum as well as on the
 package GitHub page. The package provides several sample and
 benchmarking datasets, and relies on other dedicated
@@ -482,7 +489,9 @@ v <- packageVersion("MSnbase")
 
 The version of \texttt{MSnbase} used in this manuscript is
 \Sexpr{v}. The main features presented here were available since
-version 2.0.
+version 2.0. The code to reproduce the analyses and figures in this
+article is available at
+\url{https://github.com/lgatto/2020-msnbase-v2/}.
 
 
 
