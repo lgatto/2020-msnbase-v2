@@ -318,11 +318,6 @@ becomes more efficient, as illustrated on Figure~\ref{fig:bench}
 (i.e. all spectra are already in memory) and negligible when only subsets of the
 data are requested.
 
-This new on-disk infrastructure enables analyses also of very large scale
-experiments using \texttt{MSnbase}). An example analysis of an intermediate
-scale metabolomics experiment (~2000 raw data files) using the
-\texttt{xcms}~\cite{Smith:2006} R package, that completely builds on the on-disk infrastructure
-of \texttt{MSnbase}, is described in [TODO: add citation once published.] 
 
 \subsection{Prototyping}
 
