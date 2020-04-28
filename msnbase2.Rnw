@@ -34,7 +34,7 @@
 \author{Sebastian Gibb}
 \affiliation[University of Greifswald]{Department of Anaesthesiology and Intensive Care of the University Medicine Greifswald, Germany}
 \author{Johannes Rainer}
-\affiliation[EURAC]{Institute for Biomedicine, Eurac Research, Affiliated Institute of the University of L\"ubeck, Bolzano, Italy}
+\affiliation[Eurac Research]{Institute for Biomedicine, Eurac Research, Affiliated Institute of the University of L\"ubeck, Bolzano, Italy}
 
 
 \title[MSnbase version 2]
@@ -67,7 +67,7 @@ library("patchwork")
 
 \section{Introduction}
 
-Mass spectrometry is a powerful technology to assays chemical and
+Mass spectrometry is a powerful technology to assay chemical and
 biological samples. It is used routinely with well characterised
 protocol, as well a development platform, to improve on existing
 methods and devise new ones. The complexity and diversity of mass
@@ -80,29 +80,28 @@ methods, there is a need to process, analyse, interpret and assess
 these new data to demonstrate the improvement in their technical and
 analytical workflows.
 
-There exists a very diverse catalogue of software tools to explore,
-process and interpret mass spectrometry data. These range from low
-level software libraries that are aimed at programmers to develop new
-applications, to user-oriented applications. Example of software
+There exists a very diverse catalogue of software tools to explore, process and
+interpret mass spectrometry data. These range from low level software libraries
+that are aimed at programmers to enable development of new applications, to more
+user-oriented applications with graphical user interfaces. Example of software
 libraries include Java-based jmzML~\cite{Cote:2010} or C/C++-based
-ProteoWizard~\cite{Chambers:2012}, that are used as application
-programming interfaces. ProteomeDiscoverer (Thermo Scientific),
-MaxQuant~\cite{Cox:2008} and PeptideShaker~\cite{Vaudel:2015} are
-among the most widely user-centric application. They generally provide
-a limited and fixed set of functionality featuring often advanced
-graphical user interfaces.
+ProteoWizard~\cite{Chambers:2012}, that are used as application programming
+interfaces. ProteomeDiscoverer (Thermo Scientific), MaxQuant~\cite{Cox:2008} and
+PeptideShaker~\cite{Vaudel:2015} are among the most widely used user-centric
+applications. They generally provide a limited and fixed set of functionality
+featuring often advanced graphical user interfaces.
 
 In this software note, we present version 2 of the \texttt{MSnbase}
 \cite{Gatto:2012} software package, available from the
 Bioconductor~\cite{Huber:2015} project. \texttt{MSnbase}, like other
-Python-based software packages such as {pyOpenMS}~\cite{Rost:2014},
+software packages such as Python-based {pyOpenMS}~\cite{Rost:2014},
 spectrum\_utils~\cite{Bittremieux:2020} or
 Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
 low level libraries and end-use software. \texttt{MSnbase} provides a
 flexible R~\cite{R} command line environment for metabolomics and
-proteomics mass spectrometry-based application. It allows a detailed
+proteomics mass spectrometry-based applications. It allows a detailed
 step-by-step processing, analysis and exploration of the data and
-development of novel computational mass spectrometry methods.
+development of novel computational mass spectrometry methods~\cite{Stanstrup:2019}.
 
 \section{Software functionality}
 
@@ -165,12 +164,11 @@ experimentData: use 'experimentData(object)'
 [35] "spectrum"
 @
 
-In the following sections, we will describe demonstrate how
-\texttt{MSnbase} effichiently manages large raw mass spectrometry data
-and how it is used for data processing and visualisation. We will also
-illustrate how it makes use of the forward-pipe operator
-(\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
-operator has proved useful to develop non-trivial analyses by
+In the following sections, we describe \texttt{MSnbase}'s ability to efficiently
+manage very large mass spectrometry data and experiments and how it can be used
+for data processing and visualisation. We will also illustrate how it makes use
+of the forward-pipe operator (\texttt{\%>\%}) defined in the \texttt{magrittr}
+package. This operator has proved useful to develop non-trivial analyses by
 combining individual functions into easily readable pipelines.
 
 \subsection{On-disk backend}
@@ -179,7 +177,7 @@ The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
 demonstrates how to create two \texttt{MSnExp} objects, tailored to
-manage mass spectrometry experiments, storing data in-memory or
+manage mass spectrometry experiments, storing data either in-memory or
 on-disk.
 
 <<readMSData, eval = FALSE, echo = TRUE>>=
@@ -283,20 +281,20 @@ p_access <-
 
 The former is the legacy storage mode, implemented in the first
 version of the package, that loads all the raw data and the metadata
-in memory. This solution doesn't scale for modern large dataset, and
+into memory. This solution doesn't scale for modern large dataset, and
 was complemented by the on-disk backend, that only loads metadata into
-memory and accesses the spectra in the original files when
+memory and accesses the spectra data (i.e. m/z and intensity values) in the original files when
 needed. There are two direct benefits using the on-disk backend,
-namely faster reading and reduced memory footpring. Figure
+namely faster reading and reduced memory footprint. Figure
 \ref{fig:bench} shows 5-fold faster reading times (a) and over a
 10-fold reduction in memory usage (b).
 
 The on-disk backend also offers efficient data manipulation by way of
 \textit{lazy processing}. Operations on the raw data are stored in a
-processing queue and only effectively applied when raw data is
-accessed on disk. As an example, the following short analysis
-pipeline, that can equally be applied to on in-memory or on-disk data
-retains MS2 spectra acquired between 1000 and 3000 seconds, extract
+processing queue and only effectively applied when the user accesses m/z or
+intensity values. As an example, the following short analysis
+pipeline, that can equally be applied to in-memory or on-disk data,
+retains MS2 spectra acquired between 1000 and 3000 seconds, extracts
 the m/z range corresponding to the TMT 6-plex range and focuses on the
 MS2 spectra with a precursor intensity greater than $11 \times 10^6$
 (the median precursor intensity). 
@@ -308,16 +306,17 @@ ms <- ms %>%
 ms[precursorIntensity(ms) > 11e6, ]
 @
 
-As shown on Figure~\ref{fig:bench} (c), this lazy mechanism si
+As shown on Figure~\ref{fig:bench} (c), this lazy mechanism is
 significantly faster than its application on in-memory data. The
 advantageous reading and execution times and memory footprint of the
-on-disk backend are possible by avoiding unnecessary access to the raw
+on-disk backend are possible by retrieving only spectra data from the selected
+subset hence avoiding access to the full raw
 data. Once access to the spectra m/z and intensity values become
 mandatory (for example for plotting), then the in-memory backend
 becomes more efficient, as illustrated on Figure~\ref{fig:bench}
-(d). This gain is maximal when the whole dataset is the be accessed
-(i.e. all spectra are already in memory) and negligeable when large
-fractions of the data need to be subset. 
+(d). This gain is maximal when the whole dataset is accessed
+(i.e. all spectra are already in memory) and negligible when only subsets of the
+data are requested.
 
 
 \subsection{Prototyping}
