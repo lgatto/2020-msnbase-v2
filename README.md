@@ -1,4 +1,4 @@
-# **MSnbase**, efficient and elegant R-based processing and  visualisation of raw mass spectrometry data
+# MSnbase, efficient and elegant R-based processing and  visualisation of raw mass spectrometry data
 
 We present version 2 of the **MSnbase** R/Bioconductor
 package. **MSnbase** provides infrastructure for the manipulation,
@@ -8,9 +8,13 @@ raw mass spectrometry experiment on commodity hardware and illustrate
 how the package is used for elegant data processing, method
 development and visualisation.
 
-The code to reproduce the analyses and figures are 
+The manuscript 
 
-- `S01-ondisk.R`
-- `S02-boxcar.R`
-- `S02-boxcar.R`
+- [msnbase2.pdf](https://github.com/lgatto/2020-msnbase-v2/raw/master/msnbase2.pdf)
+
+The code to reproduce the analyses and figures:
+
+- [S01-ondisk.R](https://github.com/lgatto/2020-msnbase-v2/blob/master/S01-ondisk.R)
+- [S02-boxcar.R](https://github.com/lgatto/2020-msnbase-v2/blob/master/S02-boxcar.R)
+- [S03-vis.R](https://github.com/lgatto/2020-msnbase-v2/blob/master/S03-vis.R)
 
