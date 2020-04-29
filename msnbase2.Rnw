@@ -38,7 +38,8 @@
 
 
 \title[MSnbase version 2]
-  {\texttt{MSnbase}, efficient R-based processing and visualisation of raw mass spectrometry data}
+  {\texttt{MSnbase}, efficient and elegant R-based processing and
+    visualisation of raw mass spectrometry data}
 
 \abbreviations{}
 \keywords{Bioconductor, mass spectrometry, software, reproducible research} %% up to 10 keywords
@@ -55,8 +56,8 @@
   manipulation, processing and visualisation of mass spectrometry
   data. We focus on the new \textit{on-disk} infrastructure, that
   allows the handling of large raw mass spectrometry experiment on
-  commodity hardware and illustrate how the package is used for data
-  processing, method development and visualisation.
+  commodity hardware and illustrate how the package is used for
+  elegant data processing, method development and visualisation.
 \end{abstract}
 
 <<setup, include = FALSE, message = FALSE>>=
@@ -491,7 +492,6 @@ The version of \texttt{MSnbase} used in this manuscript is
 version 2.0. The code to reproduce the analyses and figures in this
 article is available at
 \url{https://github.com/lgatto/2020-msnbase-v2/}.
-
 
 
 \begin{acknowledgement}
