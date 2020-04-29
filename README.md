@@ -1,9 +1,16 @@
-This repository contains the paper documenting version of the
-`MSnbase` Bioconductor package. 
+# **MSnbase**, efficient and elegant R-based processing and  visualisation of raw mass spectrometry data
 
-Once ready, the paper will be poster on bioRXiv and the community will
-offered the opportunity to comment.
+We present version 2 of the **MSnbase** R/Bioconductor
+package. **MSnbase** provides infrastructure for the manipulation,
+processing and visualisation of mass spectrometry data. We focus on
+the new *on-disk* infrastructure, that allows the handling of large
+raw mass spectrometry experiment on commodity hardware and illustrate
+how the package is used for elegant data processing, method
+development and visualisation.
 
-Then, we will submit it to the Journal of Proteome Research as an
-application note (see here for
-[guidelines](https://pubs.acs.org/doi/full/10.1021/pr501318d)).
+The code to reproduce the analyses and figures are 
+
+- `S01-ondisk.R`
+- `S02-boxcar.R`
+- `S02-boxcar.R`
+
