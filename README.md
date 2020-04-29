@@ -1,4 +1,4 @@
-# MSnbase, efficient and elegant R-based processing and  visualisation of raw mass spectrometry data
+# MSnbase, efficient and elegant R-based processing and visualisation of raw mass spectrometry data
 
 We present version 2 of the **MSnbase** R/Bioconductor
 package. **MSnbase** provides infrastructure for the manipulation,
