@@ -474,12 +474,15 @@ tallying over 1000 downloads from unique IP addresses each months.
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
 dedicated manual page. In addition, the package offers 5 vignettes,
-including one aimed at developers. Questions from users and developers
-are answered on the Bioconductor support forum as well as on the
-package GitHub page. The package provides several sample and
-benchmarking datasets, and relies on other dedicated
-\textit{experiment packages} such as \texttt{msdata}~\cite{msdata} for
-raw data or \texttt{pRolocdata}~\cite{Gatto:2014a} for quantitative
+including one aimed at developers. The package is checked nightly on
+the Bioconductor servers: it implements unit tests covering 72\% of
+the code base and, through its vignettes, also provides integration
+testing. Questions from users and developers are answered on the
+Bioconductor support forum as well as on the package GitHub page. The
+package provides several sample and benchmarking datasets, and relies
+on other dedicated \textit{experiment packages} such as
+\texttt{msdata}~\cite{msdata} for raw data or
+\texttt{pRolocdata}~\cite{Gatto:2014a} for quantitative
 data. \texttt{MSnbase} is available on Windows, Mac OS and Linux under
 the open source Artistic 2.0 license and easily installable using
 standard installation procedures.
