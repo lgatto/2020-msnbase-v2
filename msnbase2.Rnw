@@ -180,7 +180,9 @@ The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
 demonstrates how to create two \texttt{MSnExp} objects storing data
-either in-memory or on-disk.
+either in-memory or on-disk. Both modes rely on the
+\texttt{mzR}~\cite{Chambers:2012} package to access the data in the
+raw data files.
 
 <<readMSData, eval = FALSE, echo = TRUE>>=
 library("MSnbase")
