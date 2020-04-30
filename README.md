@@ -18,3 +18,7 @@ The code to reproduce the analyses and figures:
 - [S02-boxcar.R](https://github.com/lgatto/2020-msnbase-v2/blob/master/S02-boxcar.R)
 - [S03-vis.R](https://github.com/lgatto/2020-msnbase-v2/blob/master/S03-vis.R)
 
+
+Citation:
+
+> MSnbase, efficient and elegant R-based processing and visualisation of raw mass spectrometry data. Laurent Gatto, Sebastian Gibb, Johannes Rainer. bioRxiv 2020.04.29.067868; doi: https://doi.org/10.1101/2020.04.29.067868 
