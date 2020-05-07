@@ -266,7 +266,7 @@ raw data files.
   the in-memory (left) and on-disk (right) backends for 1, 10, 100
   1000, 5000 and all 6103 spectra. On-disk backend: blue. In-memory
   backend: red. Benchmarks were performed on a Dell XPS laptop with an
-  Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads) and 7.5 GiB RAM
+  Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads) and 7.5 GB RAM
   running Ubuntu 18.04.4 LTS 64-bit. }
 \label{fig:bench}
 \end{figure}
@@ -412,8 +412,8 @@ can be found in the \emph{MSnbase: centroiding of profile-mode MS
 \hlstd{serine_proc} \hlkwb{<-} \hlstd{ms} \hlopt{%>%}
     \hlkwd{smooth}\hlstd{(}\hlkwc{method} \hlstd{=} \hlstr{"SavitzkyGolay"}\hlstd{,} \hlkwc{halfWindowSize} \hlstd{=} \hlnum{4L}\hlstd{)} \hlopt{%>%}
     \hlkwd{pickPeaks}\hlstd{(}\hlkwc{refineMz} \hlstd{=} \hlstr{"descendPeak"}\hlstd{)} \hlopt{%>%}
-    \hlkwd{filterRt}\hlstd{(}\hlkwd{c}\hlstd{(serine_mz} \hlopt{-} \hlnum{0.01}\hlstd{, serine_mz} \hlopt{+} \hlnum{0.01}\hlstd{))} \hlopt{%>%}
-    \hlkwd{filterMz}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{175}\hlstd{,} \hlnum{187}\hlstd{))}
+    \hlkwd{filterMz}\hlstd{(}\hlkwd{c}\hlstd{(serine_mz} \hlopt{-} \hlnum{0.01}\hlstd{, serine_mz} \hlopt{+} \hlnum{0.01}\hlstd{))} \hlopt{%>%}
+    \hlkwd{filterRt}\hlstd{(}\hlkwd{c}\hlstd{(}\hlnum{175}\hlstd{,} \hlnum{187}\hlstd{))}
 \end{alltt}
 \end{kframe}
 \end{knitrout}
