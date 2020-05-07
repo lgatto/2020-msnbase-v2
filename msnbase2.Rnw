@@ -420,8 +420,8 @@ serine_mz <- 106.049871
 serine_proc <- ms %>%
     smooth(method = "SavitzkyGolay", halfWindowSize = 4L) %>% 
     pickPeaks(refineMz = "descendPeak") %>%
-    filterRt(c(serine_mz - 0.01, serine_mz + 0.01)) %>%
-    filterMz(c(175, 187))
+    filterMz(c(serine_mz - 0.01, serine_mz + 0.01)) %>%
+    filterRt(c(175, 187))
 @
 
 \begin{figure}
