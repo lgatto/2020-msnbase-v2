@@ -368,7 +368,7 @@ bc <- readMSData("boxcar.mzML", mode = "onDisk") %>%
       filterBoxCar() %>%    ## keep only BoxCar spectra
       bc_zero_out_box() %>% ## remove signal outside of BoxCar segments
       combineSpectra(fcol = "bc_groups", ## reconstruct full spectrum
-                     method = boxcarCompbine)
+                     method = boxcarCombine)
 @  
 
 
