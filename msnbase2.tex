@@ -140,20 +140,26 @@ C/C++-based ProteoWizard~\cite{Chambers:2012}. ProteomeDiscoverer
 PeptideShaker~\cite{Vaudel:2015} are among the most widely used
 user-centric applications.
 
-In this software note, we present version 2 of the \texttt{MSnbase}
-\cite{Gatto:2012} software, available from the
-Bioconductor~\cite{Huber:2015} project. \texttt{MSnbase}, like other
+In this software note, we present version 2 of the
+\texttt{MSnbase}~\cite{Gatto:2012} software, available from the
+Bioconductor~\cite{Huber:2015} project. The package, like other
 software such as Python-based {pyOpenMS}~\cite{Rost:2014},
 spectrum\_utils~\cite{Bittremieux:2020} or
 Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
 low level libraries and end-user software. \texttt{MSnbase} provides a
-flexible R~\cite{R} command line environment for metabolomics and
-proteomics mass spectrometry-based applications. It allows a detailed
-step-by-step processing, analysis and exploration of the data and
-development of novel computational mass spectrometry
-methods~\cite{Stanstrup:2019}.
+flexible R~\cite{R} command-line environment for metabolomics and
+proteomics mass spectrometry-based applications. It lays out a sound
+infrastructure to work with raw mass spectrometry, quantitative and
+proteomics identification data. The package enables manipulation of
+these data (for example subsetting, filtering, or accessing specific
+parts thereof), a detailed step-by-step processing (for example
+smoothing and centroiding of raw data, or normalisation and imputation
+of quantitative data), analysis and visualisation of these data and
+the development of novel computational mass spectrometry
+methods~\cite{Stanstrup:2019}. Here, we focus on the new developments
+pertaining to raw mass spectrometry data handling and processing.
 
-\section{Software functionality}
+\section{Infrastructure for raw data}
 
 In \texttt{MSnbase}, mass spectrometry experiments are handled as
 \texttt{MSnExp} objects. While the implementation is more complex, it
@@ -218,11 +224,12 @@ experimentData: use \hlstr{'\hlkwd{experimentData}(object)'}
 \end{kframe}
 \end{knitrout}
 
-In the following sections, we describe \texttt{MSnbase}'s ability to efficiently
-manage very large mass spectrometry data and experiments and how it can be used
-for data processing and visualisation. We will also illustrate how it makes use
-of the forward-pipe operator (\texttt{\%>\%}) defined in the \texttt{magrittr}
-package. This operator has proved useful to develop non-trivial analyses by
+In the following sections, we describe \texttt{MSnbase}'s ability to
+efficiently handle very large mass spectrometry data and experiments
+and how it can be used for data processing and visualisation. We will
+also illustrate how it makes use of the forward-pipe operator
+(\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
+operator has proved useful to develop non-trivial analyses by
 combining individual functions into easily readable pipelines.
 
 \subsection{On-disk backend}
