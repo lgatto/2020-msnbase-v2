@@ -226,7 +226,7 @@ p_sz <-
     geom_point() + 
     geom_line() + 
     scale_x_continuous(breaks=c(1, 5, 10)) + 
-    ylab("Object size (MB)") +
+    ylab("Object size [MB]") +
     xlab("Number of files") +
     theme(legend.position = "none")    
 @
