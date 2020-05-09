@@ -210,7 +210,7 @@ p_read <-
     geom_point() + 
     geom_line() + 
     scale_x_continuous(breaks=c(1, 5, 10)) + 
-    ylab("Reading time (s)") + 
+    ylab("Reading time [s]") + 
     xlab("Number of files") +
     theme(legend.position = "none")
 
