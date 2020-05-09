@@ -374,6 +374,9 @@ bc <- readMSData("boxcar.mzML", mode = "onDisk") %>%
 @  
 
 
+After processing of the BoxCar data, the final object can either be
+further analysed in R or written back to disk as an \texttt{mzML} file
+using \texttt{writeMSData()} for processing with other tools.
 
 \begin{figure}[p]
   \centering
