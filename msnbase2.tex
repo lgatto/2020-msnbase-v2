@@ -231,9 +231,7 @@ The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
 demonstrates how to create two \texttt{MSnExp} objects storing data
-either in-memory or on-disk. Both modes rely on the
-\texttt{mzR}~\cite{Chambers:2012} package to access the data in the
-raw data files.
+either in-memory or on-disk. 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -271,27 +269,31 @@ raw data files.
 \label{fig:bench}
 \end{figure}
 
-
-The former is the legacy storage mode, implemented in the first
+Both modes rely on the \texttt{mzR}~\cite{Chambers:2012} package to
+access the spectra (using the \texttt{mzR::peaks()} function) and the
+metadata (using the \texttt{mzR::header()} function) in the data
+files. The former is the legacy storage mode, implemented in the first
 version of the package, that loads all the raw data and the metadata
-into memory. This solution doesn't scale for modern large dataset, and
-was complemented by the on-disk backend. The on-disk backend loads the
-metadata into memory and accesses the spectra data (i.e. m/z and
-intensity values) in the original files only when needed. There are
-two direct benefits using the on-disk backend, namely faster reading
-and reduced memory footprint. Figure \ref{fig:bench} shows 5-fold
-faster reading times (a) and over a 10-fold reduction in memory usage
-(b).
+into memory upon creation of the in-memory \texttt{MSnExp}
+object. This solution doesn't scale for modern large dataset, and was
+complemented by the on-disk backend. The on-disk backend only loads
+the metadata into memory when the on-disk \texttt{MSnExp} is created
+and accesses the spectra data (i.e. m/z and intensity values) in the
+original files on disk only when needed (see below and Figure
+\ref{fig:bench} (d)), such as for example for plotting. There are two
+direct benefits using the on-disk backend, namely faster reading and
+reduced memory footprint. Figure \ref{fig:bench} shows 5-fold faster
+reading times (a) and over a 10-fold reduction in memory usage (b).
 
 The on-disk backend also offers efficient data manipulation by way of
-\textit{lazy processing}. Operations on the raw data are stored in a
-processing queue and only effectively applied when the user accesses m/z or
-intensity values. As an example, the following short analysis
-pipeline, that can equally be applied to in-memory or on-disk data,
-retains MS2 spectra acquired between 1000 and 3000 seconds, extracts
-the m/z range corresponding to the TMT 6-plex range and focuses on the
-MS2 spectra with a precursor intensity greater than $11 \times 10^6$
-(the median precursor intensity). 
+\textit{lazy processing} in the object itself. Operations on the raw
+data are stored in a processing queue and only effectively applied
+when the user accesses m/z or intensity values. As an example, the
+following short analysis pipeline, that can equally be applied to
+in-memory or on-disk data, retains MS2 spectra acquired between 1000
+and 3000 seconds, extracts the m/z range corresponding to the TMT
+6-plex range and focuses on the MS2 spectra with a precursor intensity
+greater than $11 \times 10^6$ (the median precursor intensity).
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
