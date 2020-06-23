@@ -102,11 +102,12 @@ Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
 low level libraries and end-user software. \texttt{MSnbase} provides a
 flexible R~\cite{R} command-line environment for metabolomics and
 proteomics mass spectrometry-based applications. It lays out a sound
-infrastructure to work with raw mass spectrometry, quantitative and
+infrastructure to work with raw mass spectrometry \color{red}{data from MS files
+  in mzML, mzXML, mzData or ANDI-MS/netCDF format as well as}\sout{,} quantitative and
 proteomics identification data. The package enables manipulation (for
 example subsetting, filtering, or accessing specific parts thereof),
 detailed step-by-step processing (for example smoothing and
-centroiding of raw data, or normalisation and imputation of
+centroiding of \sout{raw} \color{red}{profile-mode MS} data, or normalisation and imputation of
 quantitative data), analysis and visualisation of these data and the
 development of novel computational mass spectrometry
 methods~\cite{Stanstrup:2019}. Here, we focus on the new developments
@@ -123,7 +124,9 @@ associated intensities. The metadata are represented by a table with
 variables along the columns and each row associated to a
 spectrum. Among the metadata available for each spectrum, there are MS
 level, acquisition number, retention time, precursor m/z and intensity
-(for MS level 2 and above), and many more. \texttt{MSnbase} provides a
+(for MS level 2 and above), and many more. \texttt{MSnbase}\color{red}{
+  ,\textit{via} the \texttt{mzR} package~\cite{Chambers:2012}, allows import of raw mass spectrometry
+  data from files in mzML, mzXML, mzdata or ANDI-MS/netCDF format and} provides a
 rich interface to manipulate such objects. The code chunk below
 illustrates such an object as displayed in the R console and an
 enumeration of the metadata fields.
@@ -186,7 +189,8 @@ combining individual functions into easily readable pipelines.
 The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
-demonstrates how to create two \texttt{MSnExp} objects storing data
+demonstrates how to create two \texttt{MSnExp} objects \color{red}{importing
+  data from an mzML file and} storing \sout{data}\color{red}{it} 
 either in-memory or on-disk. 
 
 <<readMSData, eval = FALSE, echo = TRUE>>=
@@ -306,7 +310,7 @@ reduced memory footprint. Figure \ref{fig:bench} shows 5-fold faster
 reading times (a) and over a 10-fold reduction in memory usage (b).
 
 The on-disk backend also offers efficient data manipulation by way of
-\textit{lazy processing} in the object itself. Operations on the raw
+\textit{lazy processing} in the object itself. Operations on the \sout{raw}\color{red}{MS}
 data are stored in a processing queue and only effectively applied
 when the user accesses m/z or intensity values. As an example, the
 following short analysis pipeline, that can equally be applied to
@@ -421,7 +425,7 @@ spectrometry\cite{Gatto:2015,protViz,Pviz,Bemis:2015}. Here, we
 conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
 the efficiency of raw data processing. Figure \ref{fig:cent} compares
-the raw MS profile data for the serine and the same data after
+the raw MS profile data \color{red}{imported from an mzML file} for \sout{the} serine and the same data after
 smoothing, centroiding and m/z refinement, as illustrated in the code
 chunk below. Detailed execution and description of these operations
 can be found in the \emph{MSnbase: centroiding of profile-mode MS
