@@ -458,7 +458,7 @@ serine_proc <- ms %>%
 
 \section{Discussion}
 
-We have presented here some some important functionality of
+We have presented here some important functionality of
 \texttt{MSnbase} version 2. The new on-disk infrastructure enables
 large scale data analyses~\cite{Nothias:2020}, either using
 \texttt{MSnbase} directly or through packages that rely on it, such as
