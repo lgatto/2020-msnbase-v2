@@ -312,11 +312,11 @@ reading times (a) and over a 10-fold reduction in memory usage (b).
 \color{red}{Because the on-disk backend does not hold all the data in memory,
   direct data manipulations are not possible. We thus implemented a \textit{lazy
   processing} mechanism in this backend that caches any data manipulation
-operations on m/z and intensity values}
+operation in a processing queue in the object itself. Only when the user
+accesses m/z or intensity values these operations are applied}.
 \sout{The on-disk backend also offers efficient data manipulation by way of
-\textit{lazy processing} in the object itself. Operations on the \sout{raw}\color{red}{MS}
-data are stored} in a processing queue and only effectively
-\sout{applied}\color{red}{applies them}
+\textit{lazy processing} in the object itself. Operations on the raw
+data are stored in a processing queue and only effectively applied
 when the user accesses m/z or intensity values. \color{red}{As an additional
   advantage, operations on subsets of the data become much faster since data
   manipulations are applied only to data subsets instead of the full data set
