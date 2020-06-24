@@ -88,10 +88,11 @@ to enable development of new applications, to more user-oriented
 applications with graphical user interfaces which provide a more
 limited set of functionalities to address a defined scope. Examples of
 software libraries include Java-based jmzML~\cite{Cote:2010} or
-C/C++-based ProteoWizard~\cite{Chambers:2012}. ProteomeDiscoverer
-(Thermo Scientific), MaxQuant~\cite{Cox:2008} and
-PeptideShaker~\cite{Vaudel:2015} are among the most widely used
-user-centric applications.
+C/C++-based ProteoWizard~\cite{Chambers:2012}.
+\sout{ProteomeDiscoverer (Thermo Scientific)}
+\red{Thermo Scientific Proteome Discoverer (Thermo Fisher Scientific)},
+MaxQuant~\cite{Cox:2008} and PeptideShaker~\cite{Vaudel:2015} are among the
+most widely used user-centric applications.
 
 In this software note, we present version 2 of the
 \texttt{MSnbase}~\cite{Gatto:2012} software, available from the
