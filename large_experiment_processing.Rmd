@@ -105,6 +105,89 @@ object_size(ms_dsk)
 ```
 
 
+## Basic MS data access functionality
+
+Before evaluating the `MSnbase` performance on the large data set we provide
+first some general description of the `MSnbase` data classes in `MSnbase` basic
+data access operations. MS data from raw data files in mzML, mzXML, mzData or
+netCDF format is represented by the `MSnExp` object which organizes the spectra
+from the original files in a one-dimensional list. Functions like `rtime` and
+`msLevel` allow to extract the retention time and MS level, respectively, for
+each spectrum and return a `numeric` (or `integer`) vector with the same length
+than the number of spectra in the `MSnExp`. In the example below we use the
+`rtime` function to extract the retention times for each spectrum.
+
+```{r rtime}
+rts <- rtime(ms_dsk)
+length(rts)
+head(rts)
+```
+
+The `fromFile` function can be used to determine from which file (sample) a
+specific spectrum in the `MSnExp` object is. This function returns an `integer`
+vector, same length than spectra in the experiment, with the file index; the
+file names can be accessed with the `fileNames` method. A `MSnExp` object can be
+subsetted with `[` and e.g. the index of the spectra that should be retained. In
+the code block below we subset our `ms_dsk` object to contain only spectra from
+the 3rd file.
+
+```{r subset}
+one_file <- ms_dsk[fromFile(ms_dsk) == 3]
+length(one_file)
+```
+
+Note however that there are also dedicated *filter* functions to subset an
+`MSnExp` object such as `filterFile`, `filterMsLevel`, `filterRt`, `filterMz`,
+`filterPrecursorMz` or `filterIsolationWindow`. In the example below we use the
+`filterRt` function to further subset our data to contain only spectra acquired
+within a certain time range.
+
+```{r filterrt}
+one_file <- filterRt(one_file, rt = c(40, 300))
+length(one_file)
+```
+
+As mentioned above, the `MSnExp` object is comparable with a list of
+spectra. Thus, to extract a single spectrum from it we can use `[[`. This will
+return an object of type `Spectrum` which encapsules/represents all information
+of the measured spectrum (i.e. m/z and intensity values as well as metadata
+information). In the example below we extract the 15th spectrum from our data
+subset and access its m/z values with the `mz` function.
+
+```{r}
+sp <- one_file[[15]]
+mz(sp)
+```
+
+This particular spectrum has thus only 3 peaks.
+
+Note that m/z or intensity values can also be directly extracted from the
+`MSnExp` object as shown in the example below. The result will be a `list` of
+`numeric` vectors, each element representing the m/z values for each spectrum in
+the object.
+
+```{r}
+mzs <- mz(one_file)
+class(mzs)
+length(mzs)
+```
+
+In addition, it is also possible to extract all m/z and intensity values from an
+`MSnExp` object as a `data.frame` as shown in the code block below, but this is
+not suggested, since it loads all the data into memory and all MS spectrum
+metadata such as MS level or precursor m/z get lost.
+
+```{r data.frame}
+df <- as(one_file, "data.frame")
+head(df)
+nrow(df)
+```
+
+Note that for all these operations it is irrelevant whether an in-memory or
+on-disk backend was used. In general it is advisable to use the on-disk backend
+especially for experiments with more than ~ 50 files.
+
+
 ## Performance of the *on-disk* backend on large scale data sets
 
 To demonstrate `MSnbase`'s efficiency in processing large scale experiments we
