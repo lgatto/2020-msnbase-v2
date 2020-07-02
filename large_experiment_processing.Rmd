@@ -42,7 +42,7 @@ fls <- dir("MSV000080030/ccms_peak/Forensic_study_80_volunteers/",
            pattern = "mzXML", full.names = TRUE, recursive = TRUE)
 ```
 
-The data set consists of in total `r length(fls)` mzXML files. We next load the
+The data set consists of `r length(fls)` mzXML files. We next load the
 data using the two different `MSnbase` backends `"inMemory`" and `"onDisk"`. For
 the in-memory backend, due to the larger memory requirements, we import the data
 only from a subset of the files.
