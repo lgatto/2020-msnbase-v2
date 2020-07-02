@@ -123,7 +123,7 @@ length(rts)
 head(rts)
 ```
 
-The `fromFile` function can be used to determine from which file (sample) a
+The `fromFile` function can be used to determine the source file (sample)
 specific spectrum in the `MSnExp` object is. This function returns an `integer`
 vector, same length than spectra in the experiment, with the file index; the
 file names can be accessed with the `fileNames` method. A `MSnExp` object can be
