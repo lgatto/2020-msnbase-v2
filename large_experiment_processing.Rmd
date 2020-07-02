@@ -212,7 +212,7 @@ microbenchmark(mz(ms_mem[idx]),
                times = 5)
 ```
 
-Thus, for this combined subsetting and data access operation the on-disk backend
+For this combined subsetting and data access operation the on-disk backend
 performed better than the in-memory `MSnExp`, while even requiring much less
 memory.
 
