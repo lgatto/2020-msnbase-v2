@@ -126,7 +126,7 @@ head(rts)
 The `fromFile` function can be used to determine the source file (sample)
 of a specific spectrum in the `MSnExp` object. This function returns an `integer`
 vector, of the same length as spectra in the experiment, with the file index. The
-file names can be accessed with the `fileNames` method. A `MSnExp` object can be
+file names can be accessed with the `fileNames` method. An `MSnExp` object can be
 subsetted with `[` and e.g. the index of the spectra that should be retained. In
 the code block below we subset our `ms_dsk` object to contain only spectra from
 the 3rd file.
