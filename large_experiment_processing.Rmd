@@ -84,7 +84,7 @@ Note that the in-memory `MSnExp` object contains only MS2 spectra (in total
 slower (over ~ 12 hours for the in-memory backend while creating the on-disk 
 object from the full data data set took ~ 3 hours).
 
-Next we subset the on-disk object to contain the same set of spectra than the
+Next we subset the on-disk object to contain the same set of spectra as the
 in-memory `MSnExp` and compare their memory footprint.
 
 ```{r memory-footprint}
