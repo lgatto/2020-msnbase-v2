@@ -139,7 +139,7 @@ length(one_file)
 Note that there are also dedicated *filter* functions to subset an
 `MSnExp` object such as `filterFile`, `filterMsLevel`, `filterRt`, `filterMz`,
 `filterPrecursorMz` or `filterIsolationWindow`. In the example below we use the
-`filterRt` function to further subset our data to contain only spectra acquired
+`filterRt` function to further subset our data to keep only spectra acquired
 within a certain time range.
 
 ```{r filterrt}
