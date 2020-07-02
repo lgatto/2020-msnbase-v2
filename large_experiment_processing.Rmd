@@ -114,7 +114,7 @@ netCDF format is represented by the `MSnExp` object which organizes the spectra
 from the original files in an one-dimensional list. Functions like `rtime` and
 `msLevel` allow to extract the retention time and MS level, respectively.
 They return a `numeric` (or `integer`) vector with the same length
-than the number of spectra in the `MSnExp`. In the example below we use the
+as the number of spectra in the `MSnExp`. In the example below we use the
 `rtime` function to extract the retention times for each spectrum.
 
 ```{r rtime}
