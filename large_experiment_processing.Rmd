@@ -80,7 +80,7 @@ table(msLevel(ms_dsk))
 ```
 
 Note that the in-memory `MSnExp` object contains only MS2 spectra (in total 
-`r length(ms_mem)`) from a subset of data files, still, data import was much 
+`r length(ms_mem)`) from a subset of data files. However, the data import was much 
 slower (over ~ 12 hours for the in-memory backend while creating the on-disk 
 object from the full data data set took ~ 3 hours).
 
