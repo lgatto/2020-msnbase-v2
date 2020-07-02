@@ -174,7 +174,7 @@ length(mzs)
 
 In addition, it is also possible to extract all m/z and intensity values from an
 `MSnExp` object as a `data.frame` as shown in the code block below, but this is
-not suggested, since it loads all the data into memory and all MS spectrum
+not suggested, since it loads all the data into memory but all MS spectrum
 metadata such as MS level or precursor m/z get lost.
 
 ```{r data.frame}
