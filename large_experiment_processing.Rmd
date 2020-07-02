@@ -270,7 +270,7 @@ Note that any of the data manipulations above are not directly applied to the
 data but *cached* in the object's internal *lazy processing queue* (explaining
 the very short running time of the normalization call). The operations are only
 effectively applied to the data when m/z or intensity values are extracted from
-the object as it is the case in the `plot` call above.
+the object, e.g. in the `plot` call above.
 
 For additional workflows employing `MSnbase` see also
 [metabolomics2018](https://jorainer.github.io/metabolomics2018/xcms-preprocessing.html)[^1]
