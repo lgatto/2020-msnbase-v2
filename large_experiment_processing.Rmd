@@ -29,7 +29,7 @@ experiment consisting of more than 1,000 data files.
 To reproduce the analysis described in this document, download the *MSV000080030* folder
 from
 [ftp://massive.ucsd.edu/MSV000080030/](ftp://massive.ucsd.edu/MSV000080030/) and
-place it into the same folder than this document.
+place it into the same folder as this document.
 
 Below we load the required libraries and define the files to be analyzed.
 
@@ -290,4 +290,3 @@ sessionInfo()
 ```
 
 [^1]: https://github.com/jorainer/metabolomics2018
-
