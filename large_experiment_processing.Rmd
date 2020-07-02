@@ -111,7 +111,7 @@ Before evaluating the `MSnbase` performance on the large data set we provide
 some general description of the `MSnbase` data classes and basic
 data access operations. MS data from raw data files in mzML, mzXML, mzData or
 netCDF format is represented by the `MSnExp` object which organizes the spectra
-from the original files in a one-dimensional list. Functions like `rtime` and
+from the original files in an one-dimensional list. Functions like `rtime` and
 `msLevel` allow to extract the retention time and MS level, respectively, for
 each spectrum and return a `numeric` (or `integer`) vector with the same length
 than the number of spectra in the `MSnExp`. In the example below we use the
