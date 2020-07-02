@@ -108,7 +108,7 @@ object_size(ms_dsk)
 ## Basic MS data access functionality
 
 Before evaluating the `MSnbase` performance on the large data set we provide
-first some general description of the `MSnbase` data classes in `MSnbase` basic
+some general description of the `MSnbase` data classes and basic
 data access operations. MS data from raw data files in mzML, mzXML, mzData or
 netCDF format is represented by the `MSnExp` object which organizes the spectra
 from the original files in a one-dimensional list. Functions like `rtime` and
