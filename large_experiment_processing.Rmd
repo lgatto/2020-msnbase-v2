@@ -159,7 +159,7 @@ sp <- one_file[[15]]
 mz(sp)
 ```
 
-This particular spectrum has thus only 3 peaks.
+This particular spectrum has only 3 peaks.
 
 Note that m/z or intensity values can also be directly extracted from the
 `MSnExp` object as shown in the example below. The result will be a `list` of
