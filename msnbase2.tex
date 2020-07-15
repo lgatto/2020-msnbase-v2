@@ -115,7 +115,7 @@
   data. We focus on the new \textit{on-disk} infrastructure, that
   allows the handling of large raw mass spectrometry experiment on
   commodity hardware and illustrate how the package is used for
-  elegant data processing, method development and visualisation.
+  elegant data processing, method development, and visualisation.
 \end{abstract}
 
 
@@ -180,15 +180,15 @@ In \texttt{MSnbase}, mass spectrometry experiments are handled as
 is useful to schematise a raw data experiment as being composed of raw
 data, i.e. a collection of individual spectra, as well as
 spectra-level metadata. Each spectrum is composed of m/z values and
-associated intensities. The metadata are represented by a table with
-variables along the columns and each row associated to a
-spectrum. Among the metadata available for each spectrum, there are MS
-level, acquisition number, retention time, precursor m/z and intensity
-(for MS level 2 and above), and many more. \texttt{MSnbase}
-\textcolor{red}{relies on the \texttt{mzR}
+associated intensities. The metadata are represented by a
+\textcolor{red}{single} table with variables along the columns and
+each row associated to a spectrum. Among the metadata available for
+each spectrum, there are MS level, acquisition number, retention time,
+precursor m/z and intensity (for MS level 2 and above), and many
+more. \texttt{MSnbase} \textcolor{red}{relies on the \texttt{mzR}
   package~\cite{Chambers:2012} to import raw mass spectrometry data
   from one of the many community-maintained open standards formats
-  (mzML, mzXML, mzdata or ANDI-MS/netCDF) and} provides a rich
+  (mzML, mzXML, mzData or ANDI-MS/netCDF) and} provides a rich
 interface to manipulate such objects. The code chunk below illustrates
 such an object as displayed in the R console and an enumeration of the
 metadata fields.
@@ -261,7 +261,7 @@ The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
 demonstrates how to create two \texttt{MSnExp} objects \textcolor{red}{importing
-  data from an mzML file and} storing \sout{data}\textcolor{red}{it} 
+  data from an mzML file and} storing \sout{data}\textcolor{red}{them} 
 either in-memory or on-disk. 
 
 \begin{knitrout}
@@ -315,26 +315,27 @@ direct benefits using the on-disk backend, namely faster reading and
 reduced memory footprint. Figure \ref{fig:bench} shows 5-fold faster
 reading times (a) and over a 10-fold reduction in memory usage (b).
 
-\textcolor{red}{Because the on-disk backend does not hold all the data in memory,
-  direct data manipulations are not possible. We thus implemented a \textit{lazy
-  processing} mechanism in this backend that caches any data manipulation
-operation in a processing queue in the object itself. Only when the user
-accesses m/z or intensity values these operations are applied}.
-\sout{The on-disk backend also offers efficient data manipulation by way of
-\textit{lazy processing} in the object itself.} Operations on the raw
-data are stored in a processing queue and only effectively applied
-when the user accesses m/z or intensity values. \textcolor{red}{As an additional
-  advantage, operations on subsets of the data become much faster since data
-  manipulations are applied only to data subsets instead of the full data set
-  at once. Also, data access in on-disk backends is parallelized by data file
-  ensuring a higher performance of this backend over conventional in-memory data
-  representations.} 
-As an example, the
-following short analysis pipeline, that can equally be applied to
-in-memory or on-disk data, retains MS2 spectra acquired between 1000
-and 3000 seconds, extracts the m/z range corresponding to the TMT
-6-plex range and focuses on the MS2 spectra with a precursor intensity
-greater than $11 \times 10^6$ (the median precursor intensity).
+\textcolor{red}{Because the on-disk backend does not hold all the data
+  in memory, direct data manipulations are not possible. We thus
+  implemented a \textit{lazy processing} mechanism for this backend
+  that caches any data manipulation operations in a processing queue
+  in the object itself. Only when the user accesses m/z or intensity
+  values are these operations are applied}.  \sout{The on-disk backend
+  also offers efficient data manipulation by way of \textit{lazy
+    processing} in the object itself.} Operations on the raw data are
+stored in a processing queue and only effectively applied when the
+user accesses m/z or intensity values. \textcolor{red}{As an
+  additional advantage, operations on subsets of the data become much
+  faster since data manipulations are applied only to data subsets
+  instead of the full data set at once. Also, data access in on-disk
+  backends is parallelized by data file ensuring a higher performance
+  of this backend over conventional in-memory data representations.}
+As an example, the following short analysis pipeline, that can equally
+be applied to in-memory or on-disk data, retains MS2 spectra acquired
+between 1000 and 3000 seconds, extracts the m/z range corresponding to
+the TMT 6-plex range and focuses on the MS2 spectra with a precursor
+intensity greater than $11 \times 10^6$ (the median precursor
+intensity).
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -362,7 +363,7 @@ data are requested.
 
 \subsection{Prototyping}
 
-The \texttt{MSnExp} data structure and its interface constitute a
+The \texttt{MSnExp} data structure and its interface constitute an
 efficient prototyping environment for computational method
 development. We illustrate this by demonstrating how to implement the
 BoxCar\cite{Meier:2018} acquisition method. In a nutshell, BoxCar
@@ -400,7 +401,7 @@ is described below and illustrated with code from
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{bc} \hlkwb{<-} \hlkwd{readMSData}\hlstd{(}\hlstr{"boxcar.mzML"}\hlstd{,} \hlkwc{mode} \hlstd{=} \hlstr{"onDisk"}\hlstd{)} \hlopt{%>%}
-      \hlkwd{bc_groups}\hlstd{()} \hlopt{%>%}       \hlcom{## identify BoxCar groups (bc_groups)}
+      \hlkwd{bc_groups}\hlstd{()} \hlopt{%>%}       \hlcom{## identify BoxCar groups (creates 'bc_groups')}
       \hlkwd{filterBoxCar}\hlstd{()} \hlopt{%>%}    \hlcom{## keep only BoxCar spectra}
       \hlkwd{bc_zero_out_box}\hlstd{()} \hlopt{%>%} \hlcom{## remove signal outside of BoxCar segments}
       \hlkwd{combineSpectra}\hlstd{(}\hlkwc{fcol} \hlstd{=} \hlstr{"bc_groups"}\hlstd{,} \hlcom{## reconstruct full spectrum}
@@ -446,11 +447,12 @@ spectrometry\cite{Gatto:2015,protViz,Pviz,Bemis:2015}. Here, we
 conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
 the efficiency of raw data processing. Figure \ref{fig:cent} compares
-the raw MS profile data \textcolor{red}{imported from an mzML file} for \sout{the} serine and the same data after
-smoothing, centroiding and m/z refinement, as illustrated in the code
-chunk below. Detailed execution and description of these operations
-can be found in the \emph{MSnbase: centroiding of profile-mode MS
-  data} \texttt{MSnbase} vignette.
+the raw MS profile data \textcolor{red}{imported from an mzML file}
+for \sout{the} serine and the same data after smoothing, centroiding
+and m/z refinement, as illustrated in the code chunk below. Detailed
+execution and description of these operations can be found in the
+\emph{MSnbase: centroiding of profile-mode MS data} \texttt{MSnbase}
+vignette.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -501,18 +503,19 @@ these are \texttt{pRoloc}~\cite{Gatto:2014a} to analyse mass
 spectrometry-based spatial proteomics data,
 \texttt{msmsTests}~\cite{msmsTests}, \texttt{DEP}~\cite{Zhang:2018},
 \texttt{DAPAR} and \texttt{ProStaR}~\cite{Wieczorek:2017} for the
-statistical analysis for quantitative proteomics data,
-\texttt{RMassBank}~\cite{Stravs:2013} to process metabolomics tandem
-MS files and build MassBank records,
+statistical analysis \sout{for} \textcolor{red}{of} quantitative
+proteomics data, \texttt{RMassBank}~\cite{Stravs:2013} to process
+metabolomics tandem MS files and build MassBank records,
 \texttt{MSstatsQC}~\cite{Dogu:2017} for longitudinal system
 suitability monitoring and quality control of targeted proteomic
-experiments and the widely used \texttt{xcms}~\cite{Smith:2006} package
-for the processing and analysis of metabolomics data. \texttt{MSnbase}
-is also used in non-R/Bioconductor software, such as for example
-IsoProt~\cite{Griss:2019}, that provides a reproducible workflow for
-iTRAQ/TMT experiments. \texttt{MSnbase} currently ranks 101 out of
-1823 packages based on the monthly downloads from unique IP addresses,
-tallying over 1000 downloads from unique IP addresses each months.
+experiments and the widely used \texttt{xcms}~\cite{Smith:2006}
+package for the processing and analysis of metabolomics
+data. \texttt{MSnbase} is also used in non-R/Bioconductor software,
+such as for example IsoProt~\cite{Griss:2019}, that provides a
+reproducible workflow for iTRAQ/TMT experiments. \texttt{MSnbase}
+currently ranks 101 out of 1823 packages based on the monthly
+downloads from unique IP addresses, tallying over 1000 downloads from
+unique IP addresses each months.
 
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
