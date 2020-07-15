@@ -110,18 +110,21 @@ Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
 low level libraries and end-user software. \texttt{MSnbase} provides a
 flexible R~\cite{R} command-line environment for metabolomics and
 proteomics mass spectrometry-based applications. It lays out a sound
-infrastructure to work with raw mass spectrometry \textcolor{red}{data from MS files
-  in mzML, mzXML, mzData or ANDI-MS/netCDF format as well as}\sout{,} quantitative and
-proteomics identification data. The package enables manipulation (for
-example subsetting, filtering, or accessing specific parts thereof),
-detailed step-by-step processing (for example smoothing and
-centroiding of \sout{raw} \textcolor{red}{profile-mode MS} data, or normalisation and imputation of
-quantitative data), analysis and visualisation of these data and the
-development of novel computational mass spectrometry
-methods~\cite{Stanstrup:2019}. \textcolor{red}{Extensive documentation and use cases 
-are provided in \textit{package vignettes}~\cite{MSnbaseVignettes} and 
-workflows~\cite{xcmsWorkflow}.} Here, we focus on the new developments
-pertaining to raw mass spectrometry data handling and processing.
+infrastructure to work with raw mass spectrometry \textcolor{red}{data
+  from MS files in mzML, mzXML, mzData or ANDI-MS/netCDF format as
+  well as} quantitative and proteomics identification data. The
+package enables manipulation (for example subsetting, filtering, or
+accessing specific parts thereof), detailed step-by-step processing
+(for example smoothing and centroiding of \sout{raw}
+\textcolor{red}{profile-mode MS} data, or normalisation and imputation
+of quantitative data), analysis and visualisation of these data and
+the development of novel computational mass spectrometry
+methods~\cite{Stanstrup:2019}. \textcolor{red}{Extensive documentation
+  and use cases are provided in \textit{package
+    vignettes}~\cite{MSnbaseVignettes} and
+  workflows~\cite{xcmsWorkflow}.} Here, we focus on the new
+developments pertaining to raw mass spectrometry data handling and
+processing.
 
 \section{Infrastructure for raw data}
 
@@ -134,13 +137,14 @@ associated intensities. The metadata are represented by a table with
 variables along the columns and each row associated to a
 spectrum. Among the metadata available for each spectrum, there are MS
 level, acquisition number, retention time, precursor m/z and intensity
-(for MS level 2 and above), and many
-more. \texttt{MSnbase}\textcolor{red}{, \textit{via} the \texttt{mzR}
-  package~\cite{Chambers:2012}, allows import of raw mass spectrometry
-  data from files in mzML, mzXML, mzdata or ANDI-MS/netCDF format and}
-provides a rich interface to manipulate such objects. The code chunk
-below illustrates such an object as displayed in the R console and an
-enumeration of the metadata fields.
+(for MS level 2 and above), and many more. \texttt{MSnbase}
+\textcolor{red}{relies on the \texttt{mzR}
+  package~\cite{Chambers:2012} to import raw mass spectrometry data
+  from one of the many community-maintained open standards formats
+  (mzML, mzXML, mzdata or ANDI-MS/netCDF) and} provides a rich
+interface to manipulate such objects. The code chunk below illustrates
+such an object as displayed in the R console and an enumeration of the
+metadata fields.
 
 <<msnexp, echo = TRUE, eval = FALSE>>=
 > show(ms)
@@ -187,16 +191,18 @@ experimentData: use 'experimentData(object)'
 [35] "spectrum"
 @
 
-In the following sections, we describe \sout{\texttt{MSnbase}'s ability to
-  efficiently handle very large mass spectrometry data and experiments and how
-  it} \textcolor{red}{how \texttt{MSnbase}} can be used for data processing and
-visualisation. We will also illustrate how it makes use of the forward-pipe
-operator (\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
-operator has proved useful to develop non-trivial analyses by combining
-individual functions into easily readable pipelines. \textcolor{red}{An example for
-  \texttt{MSnbase}'s ability to efficiently handle also very large mass
-  spectrometry experiments (in this case with 5,773,464 spectra in 1,182 mzXML
-  files) is provided as Supplementary Information.}
+In the following sections, we describe \sout{\texttt{MSnbase}'s
+  ability to efficiently handle very large mass spectrometry data and
+  experiments and how it} \textcolor{red}{how \texttt{MSnbase}} can be
+used for data processing and visualisation. \textcolor{red}{An example
+  of its ability to efficiently handle also very large mass
+  spectrometry experiments (in this case with 5,773,464 spectra in
+  1,182 mzXML files) is provided as supplementary information.}  We
+will also illustrate how it makes use of the forward-pipe operator
+(\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
+operator has proved useful to develop non-trivial analyses by
+combining individual functions into easily readable pipelines.
+
 
 \subsection{On-disk backend}
 
@@ -234,8 +240,11 @@ p_read <-
     geom_line() + 
     scale_x_continuous(breaks=c(1, 5, 10)) + 
     ylab("Reading time [s]") + 
-    xlab("Number of files") +
-    theme(legend.position = "none")
+    xlab("Number of files") + 
+    theme(legend.position = c(0.35, 0.86),
+          legend.title = element_blank(),
+          legend.text=element_text(size = 6))
+
 
 p_sz <- 
     data.frame(sz) %>% 
@@ -300,10 +309,9 @@ p_access <-
   benchmark assessed over 10 interactions on in-memory and on-disk
   data containing 6103 MS2 spectra.  (d) Access time to spectra for
   the in-memory (left) and on-disk (right) backends for 1, 10, 100
-  1000, 5000 and all 6103 spectra. On-disk backend: blue. In-memory
-  backend: red. Benchmarks were performed on a Dell XPS laptop with an
-  Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads) and 7.5 GB RAM
-  running Ubuntu 18.04.4 LTS 64-bit. }
+  1000, 5000 and all 6103 spectra. Benchmarks were performed on a Dell
+  XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8
+  threads) and 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit. }
 \label{fig:bench}
 \end{figure}
 
@@ -431,7 +439,8 @@ p1 + p2 + p3 + p4 +
   segments. Figure (c) shows the overlapping intact BoxCar segments
   and (d) the same segments after cleaning, i.e. where peaks outside
   of the segments were removed. The reconstructed full scan is shown
-  on panel (e).}
+  on panel (e). Spectra visualisation, as shown here, rely on the
+  \texttt{ggplot2} \cite{ggplot2} package. }
 \label{fig:bc}
 \end{figure}
 
