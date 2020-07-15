@@ -111,7 +111,9 @@ detailed step-by-step processing (for example smoothing and
 centroiding of \sout{raw} \color{red}{profile-mode MS} data, or normalisation and imputation of
 quantitative data), analysis and visualisation of these data and the
 development of novel computational mass spectrometry
-methods~\cite{Stanstrup:2019}. Here, we focus on the new developments
+methods~\cite{Stanstrup:2019}. \color{red}{Extensive documentation and use cases 
+are provided in \textit{package vignettes}~\cite{MSnbaseVignettes} and 
+workflows~\cite{xcmsWorkflow}.} Here, we focus on the new developments
 pertaining to raw mass spectrometry data handling and processing.
 
 \section{Infrastructure for raw data}
