@@ -1,0 +1,292 @@
+---
+title: "Supplementary data for: \\textit{`MSnbase`, efficient and elegant R-based processing and visualisation of raw mass spectrometry data}"
+author: "Laurent Gatto, Sebastian Gibb and Johannes Rainer"
+output:
+    BiocStyle::pdf_document
+---
+
+```{r style, echo = FALSE, results = 'asis', message=FALSE}
+BiocStyle::markdown()
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Introduction
+
+This document describes handling of mass spectrometry data from large
+experiments using the `MSnbase` package and more specifically its *on-disk*
+backend. For demonstration purposes, the
+[MassIVE](https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp) data set
+[MSV000080030](https://massive.ucsd.edu/ProteoSAFe/dataset.jsp?task=5e7034cc98c54a47b803b144bff6a296)
+is used. This consists of over 1,000 mzXML files from swab-samples collected
+from hands and various personal objects of 80 volunteers.
+
+
+# Data handling and analysis with `MSnbase`
+
+In this section we demonstrate data handling and access by `MSnbase` on a large
+experiment consisting of more than 1,000 data files.
+
+To reproduce the analysis described in this document, download the *MSV000080030* folder
+from
+[ftp://massive.ucsd.edu/MSV000080030/](ftp://massive.ucsd.edu/MSV000080030/) and
+place it into the same folder as this document.
+
+Below we load the required libraries and define the files to be analyzed.
+
+```{r}
+library(MSnbase)
+library(magrittr)
+library(pryr)
+
+fls <- dir("MSV000080030/ccms_peak/Forensic_study_80_volunteers/",
+           pattern = "mzXML", full.names = TRUE, recursive = TRUE)
+```
+
+The data set consists of `r length(fls)` mzXML files. We next load the
+data using the two different `MSnbase` backends `"inMemory`" and `"onDisk"`. For
+the in-memory backend, due to the larger memory requirements, we import the data
+only from a subset of the files.
+
+```{r import-inmem, eval = !file.exists("ms_mem_hand.RData")}
+ms_mem <- readMSData(fls[grep("Hand", fls)], mode = "inMemory")
+```
+
+```{r import-inmem-save, echo = FALSE}
+if (!file.exists("ms_mem_hand.RData")) {
+    save(ms_mem, file = "ms_mem_hand.RData")
+} else {
+    load("ms_mem_hand.RData")
+}
+```
+
+Next we load data from all mzXML files as an on-disk `MSnExp` object.
+
+```{r import-ondisk, eval = !file.exists("ms_dsk_all.RData")}
+ms_dsk <- readMSData(fls, mode = "onDisk")
+```
+
+```{r import-ondisk-save, echo = FALSE}
+if (!file.exists("ms_dsk_all.RData")) {
+    save(ms_dsk, file = "ms_dsk_all.RData")
+} else {
+    load("ms_dsk_all.RData")
+}
+```
+
+Below we count the number of spectra per MS level of the whole experiment.
+
+```{r ondisk-spectra-table}
+table(msLevel(ms_dsk))
+```
+
+Note that the in-memory `MSnExp` object contains only MS2 spectra (in total 
+`r length(ms_mem)`) from a subset of data files. However, the data import was much 
+slower (over ~ 12 hours for the in-memory backend while creating the on-disk 
+object from the full data data set took ~ 3 hours).
+
+Next we subset the on-disk object to contain the same set of spectra as the
+in-memory `MSnExp` and compare their memory footprint.
+
+```{r memory-footprint}
+ms_dsk_hands <- ms_dsk %>%
+    filterFile(grep("Hand", fls)) %>%
+    filterMsLevel(2L)
+
+object_size(ms_mem)
+object_size(ms_dsk_hands)
+```
+
+Since the on-disk object stores only spectra metadata in memory it occupies also
+much less system memory. As a comparison, the on-disk `MSnExp` for the full
+experiment was still much smaller than the in-memory object:
+
+```{r memory-footprint-all}
+object_size(ms_dsk)
+```
+
+
+## Basic MS data access functionality
+
+Before evaluating the `MSnbase` performance on the large data set we provide
+some general description of the `MSnbase` data classes and basic
+data access operations. MS data from raw data files in mzML, mzXML, mzData or
+netCDF format is represented by the `MSnExp` object which organizes the spectra
+from the original files in an one-dimensional list. Functions like `rtime` and
+`msLevel` allow to extract the retention time and MS level, respectively.
+They return a `numeric` (or `integer`) vector with the same length
+as the number of spectra in the `MSnExp`. In the example below we use the
+`rtime` function to extract the retention times for each spectrum.
+
+```{r rtime}
+rts <- rtime(ms_dsk)
+length(rts)
+head(rts)
+```
+
+The `fromFile` function can be used to determine the source file (sample)
+of a specific spectrum in the `MSnExp` object. This function returns an `integer`
+vector, of the same length as spectra in the experiment, with the file index. The
+file names can be accessed with the `fileNames` method. An `MSnExp` object can be
+subsetted with `[` and e.g. the index of the spectra that should be retained. In
+the code block below we subset our `ms_dsk` object to keep only spectra from
+the 3rd file.
+
+```{r subset}
+one_file <- ms_dsk[fromFile(ms_dsk) == 3]
+length(one_file)
+```
+
+Note that there are also dedicated *filter* functions to subset an
+`MSnExp` object such as `filterFile`, `filterMsLevel`, `filterRt`, `filterMz`,
+`filterPrecursorMz` or `filterIsolationWindow`. In the example below we use the
+`filterRt` function to further subset our data to keep only spectra acquired
+within a certain time range.
+
+```{r filterrt}
+one_file <- filterRt(one_file, rt = c(40, 300))
+length(one_file)
+```
+
+As mentioned above, the `MSnExp` object is comparable with a list of
+spectra. Thus, to extract a single spectrum from it we can use `[[`. This will
+return an object of type `Spectrum` which encapsules/represents all information
+of the measured spectrum (i.e. m/z and intensity values as well as metadata
+information). In the example below we extract the 15th spectrum from our data
+subset and access its m/z values with the `mz` function.
+
+```{r}
+sp <- one_file[[15]]
+mz(sp)
+```
+
+This particular spectrum has only 3 peaks.
+
+Note that m/z or intensity values can also be directly extracted from the
+`MSnExp` object as shown in the example below. The result will be a `list` of
+`numeric` vectors, each element representing the m/z values for each spectrum in
+the object.
+
+```{r}
+mzs <- mz(one_file)
+class(mzs)
+length(mzs)
+```
+
+In addition, it is also possible to extract all m/z and intensity values from an
+`MSnExp` object as a `data.frame` as shown in the code block below, but this is
+not suggested, since it loads all the data into memory but all MS spectrum
+metadata such as MS level or precursor m/z get lost.
+
+```{r data.frame}
+df <- as(one_file, "data.frame")
+head(df)
+nrow(df)
+```
+
+Note that for all these operations it is irrelevant whether an in-memory or
+on-disk backend was used. In general it is advisable to use the on-disk backend
+especially for experiments with more than ~ 50 files.
+
+
+## Performance of the *on-disk* backend on large scale data sets
+
+To demonstrate `MSnbase`'s efficiency in processing large scale experiments we
+perform some standard subsetting, data access and manipulation operations.
+
+```{r parallel-setup, echo = FALSE}
+library(BiocParallel)
+register(SerialParam())
+```
+
+We first compare the performance of the on-disk and in-memory backend on
+accessing m/z values with the `mz` function on a set of 100 randomly selected
+spectra. The performance is assessed with the `microbenchmark` function.
+
+```{r random-mz}
+set.seed(123)
+idx <- sample(seq_along(ms_mem), 100)
+
+library(microbenchmark)
+microbenchmark(mz(ms_mem[idx]),
+               mz(ms_dsk_hands[idx]),
+               times = 5)
+```
+
+For this combined subsetting and data access operation the on-disk backend
+performed better than the in-memory `MSnExp`, while even requiring much less
+memory.
+
+Next we extract all MS2 spectra with a retention time between 50 and 60 seconds
+and a precursor m/z of 108.5362 (+/- 5ppm). This subsetting operation is
+performed on the on-disk `MSnExp` object representing the full experiment with
+the `r length(fileNames(ms_dsk))` data files/samples. To assess the performance
+of the following operations we use `system.time` calls that record elapsed time
+in seconds.
+
+```{r precursor-selection}
+system.time(
+    ms_sub <- ms_dsk %>%
+        filterMsLevel(2L) %>%
+        filterRt(c(50, 60)) %>%
+        filterPrecursorMz(mz = 108.5362, ppm = 5)
+)["elapsed"]
+```
+
+In total `length(ms_sub)` spectra were selected from in total 
+`r length(unique(fromFile(ms_sub)))` data files/samples. The plot below shows 
+the data for the first spectrum.
+
+```{r precursor-selection-plot-1}
+system.time(
+    plot(ms_sub[[1]])
+)["elapsed"]
+```
+
+Since there seems to be quite some background noise in the MS2 spectrum we next
+remove peaks with an intensity below 50 by first replacing their intensities
+with 0 (with the `removePeaks` call) and subsequently removing all 0-intensity
+peaks from each spectrum with the `clean` call. In addition we *normalize* each
+spectrum by dividing the maximum intensity per spectrum from the spectrum's
+intensities.
+
+```{r normalize}
+system.time(
+    ms_sub <- ms_sub %>%
+        removePeaks(t = 50) %>%
+        clean(all = TRUE) %>%
+        normalize(method = "max")
+)["elapsed"]
+```
+
+The result on the first spectrum is shown below.
+
+```{r precursor-selection-plot-normalized}
+system.time(
+    plot(ms_sub[[1]])
+)["elapsed"]
+```
+
+Note that any of the data manipulations above are not directly applied to the
+data but *cached* in the object's internal *lazy processing queue* (explaining
+the very short running time of the normalization call). The operations are only
+effectively applied to the data when m/z or intensity values are extracted from
+the object, e.g. in the `plot` call above.
+
+For additional workflows employing `MSnbase` see also
+[metabolomics2018](https://jorainer.github.io/metabolomics2018/xcms-preprocessing.html)[^1]
+that explains filtering, plotting and centroiding of profile-mode MS data with
+`MSnbase` and subsequent pre-processing of the (label free/untargeted) LC-MS
+data with the `xcms` package (that builds upon `MSnbase` for MS data
+representation and access).
+
+## System information
+
+The present analysis was run on a MacBook Pro 16,1 with 2.3 GHz 8-Core Intel
+Core i9 CPU and 64 GB 2667 MHz DDR4 memory running macOS version 10.15.5. The R
+version and the version of the used packages are listed below.
+
+```{r session-info}
+sessionInfo()
+```
+
+[^1]: https://github.com/jorainer/metabolomics2018
