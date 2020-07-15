@@ -48,7 +48,14 @@
 \definecolor{errorcolor}{rgb}{1, 0, 0}
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
-\usepackage{alltt}\usepackage[]{graphicx}\usepackage[]{color}
+\usepackage{alltt}
+
+\usepackage[]{graphicx}
+\usepackage[]{color}
+
+\usepackage[]{xcolor}
+\usepackage[normalem]{ulem}
+
 %% maxwidth is the original width if it is less than linewidth
 %% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -135,10 +142,11 @@ to enable development of new applications, to more user-oriented
 applications with graphical user interfaces which provide a more
 limited set of functionalities to address a defined scope. Examples of
 software libraries include Java-based jmzML~\cite{Cote:2010} or
-C/C++-based ProteoWizard~\cite{Chambers:2012}. ProteomeDiscoverer
-(Thermo Scientific), MaxQuant~\cite{Cox:2008} and
-PeptideShaker~\cite{Vaudel:2015} are among the most widely used
-user-centric applications.
+C/C++-based ProteoWizard~\cite{Chambers:2012}.
+\sout{ProteomeDiscoverer (Thermo Scientific)}
+\textcolor{red}{Thermo Scientific Proteome Discoverer (Thermo Fisher Scientific)},
+MaxQuant~\cite{Cox:2008} and PeptideShaker~\cite{Vaudel:2015} are among the
+most widely used user-centric applications.
 
 In this software note, we present version 2 of the
 \texttt{MSnbase}~\cite{Gatto:2012} software, available from the
@@ -149,14 +157,17 @@ Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
 low level libraries and end-user software. \texttt{MSnbase} provides a
 flexible R~\cite{R} command-line environment for metabolomics and
 proteomics mass spectrometry-based applications. It lays out a sound
-infrastructure to work with raw mass spectrometry, quantitative and
+infrastructure to work with raw mass spectrometry \textcolor{red}{data from MS files
+  in mzML, mzXML, mzData or ANDI-MS/netCDF format as well as}\sout{,} quantitative and
 proteomics identification data. The package enables manipulation (for
 example subsetting, filtering, or accessing specific parts thereof),
 detailed step-by-step processing (for example smoothing and
-centroiding of raw data, or normalisation and imputation of
+centroiding of \sout{raw} \textcolor{red}{profile-mode MS} data, or normalisation and imputation of
 quantitative data), analysis and visualisation of these data and the
 development of novel computational mass spectrometry
-methods~\cite{Stanstrup:2019}. Here, we focus on the new developments
+methods~\cite{Stanstrup:2019}. \textcolor{red}{Extensive documentation and use cases 
+are provided in \textit{package vignettes}~\cite{MSnbaseVignettes} and 
+workflows~\cite{xcmsWorkflow}.} Here, we focus on the new developments
 pertaining to raw mass spectrometry data handling and processing.
 
 \section{Infrastructure for raw data}
@@ -170,9 +181,12 @@ associated intensities. The metadata are represented by a table with
 variables along the columns and each row associated to a
 spectrum. Among the metadata available for each spectrum, there are MS
 level, acquisition number, retention time, precursor m/z and intensity
-(for MS level 2 and above), and many more. \texttt{MSnbase} provides a
-rich interface to manipulate such objects. The code chunk below
-illustrates such an object as displayed in the R console and an
+(for MS level 2 and above), and many
+more. \texttt{MSnbase}\textcolor{red}{, \textit{via} the \texttt{mzR}
+  package~\cite{Chambers:2012}, allows import of raw mass spectrometry
+  data from files in mzML, mzXML, mzdata or ANDI-MS/netCDF format and}
+provides a rich interface to manipulate such objects. The code chunk
+below illustrates such an object as displayed in the R console and an
 enumeration of the metadata fields.
 
 \begin{knitrout}
@@ -224,20 +238,24 @@ experimentData: use \hlstr{'\hlkwd{experimentData}(object)'}
 \end{kframe}
 \end{knitrout}
 
-In the following sections, we describe \texttt{MSnbase}'s ability to
-efficiently handle very large mass spectrometry data and experiments
-and how it can be used for data processing and visualisation. We will
-also illustrate how it makes use of the forward-pipe operator
-(\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
-operator has proved useful to develop non-trivial analyses by
-combining individual functions into easily readable pipelines.
+In the following sections, we describe \sout{\texttt{MSnbase}'s ability to
+  efficiently handle very large mass spectrometry data and experiments and how
+  it} \textcolor{red}{how \texttt{MSnbase}} can be used for data processing and
+visualisation. We will also illustrate how it makes use of the forward-pipe
+operator (\texttt{\%>\%}) defined in the \texttt{magrittr} package. This
+operator has proved useful to develop non-trivial analyses by combining
+individual functions into easily readable pipelines. \textcolor{red}{An example for
+  \texttt{MSnbase}'s ability to efficiently handle also very large mass
+  spectrometry experiments (in this case with 5,773,464 spectra in 1,182 mzXML
+  files) is provided as Supplementary Information.}
 
 \subsection{On-disk backend}
 
 The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
-demonstrates how to create two \texttt{MSnExp} objects storing data
+demonstrates how to create two \texttt{MSnExp} objects \textcolor{red}{importing
+  data from an mzML file and} storing \sout{data}\textcolor{red}{it} 
 either in-memory or on-disk. 
 
 \begin{knitrout}
@@ -292,10 +310,21 @@ direct benefits using the on-disk backend, namely faster reading and
 reduced memory footprint. Figure \ref{fig:bench} shows 5-fold faster
 reading times (a) and over a 10-fold reduction in memory usage (b).
 
-The on-disk backend also offers efficient data manipulation by way of
-\textit{lazy processing} in the object itself. Operations on the raw
+\textcolor{red}{Because the on-disk backend does not hold all the data in memory,
+  direct data manipulations are not possible. We thus implemented a \textit{lazy
+  processing} mechanism in this backend that caches any data manipulation
+operation in a processing queue in the object itself. Only when the user
+accesses m/z or intensity values these operations are applied}.
+\sout{The on-disk backend also offers efficient data manipulation by way of
+\textit{lazy processing} in the object itself.} Operations on the raw
 data are stored in a processing queue and only effectively applied
-when the user accesses m/z or intensity values. As an example, the
+when the user accesses m/z or intensity values. \textcolor{red}{As an additional
+  advantage, operations on subsets of the data become much faster since data
+  manipulations are applied only to data subsets instead of the full data set
+  at once. Also, data access in on-disk backends is parallelized by data file
+  ensuring a higher performance of this backend over conventional in-memory data
+  representations.} 
+As an example, the
 following short analysis pipeline, that can equally be applied to
 in-memory or on-disk data, retains MS2 spectra acquired between 1000
 and 3000 seconds, extracts the m/z range corresponding to the TMT
@@ -411,7 +440,7 @@ spectrometry\cite{Gatto:2015,protViz,Pviz,Bemis:2015}. Here, we
 conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
 the efficiency of raw data processing. Figure \ref{fig:cent} compares
-the raw MS profile data for the serine and the same data after
+the raw MS profile data \textcolor{red}{imported from an mzML file} for \sout{the} serine and the same data after
 smoothing, centroiding and m/z refinement, as illustrated in the code
 chunk below. Detailed execution and description of these operations
 can be found in the \emph{MSnbase: centroiding of profile-mode MS
@@ -448,7 +477,7 @@ can be found in the \emph{MSnbase: centroiding of profile-mode MS
 
 \section{Discussion}
 
-We have presented here some some important functionality of
+We have presented here some important functionality of
 \texttt{MSnbase} version 2. The new on-disk infrastructure enables
 large scale data analyses~\cite{Nothias:2020}, either using
 \texttt{MSnbase} directly or through packages that rely on it, such as
@@ -499,7 +528,7 @@ standard installation procedures.
 
 
 The version of \texttt{MSnbase} used in this manuscript is
-2.14.0. The main features presented here were available since
+2.14.2. The main features presented here were available since
 version 2.0. The code to reproduce the analyses and figures in this
 article is available at
 \url{https://github.com/lgatto/2020-msnbase-v2/}.
