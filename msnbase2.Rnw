@@ -512,7 +512,7 @@ serine_proc <- ms %>%
 \end{figure}
 
 
-\subsection{\textcolor{red}{Package management and governance}}
+\subsection{\textcolor{red}{Package maintenance and governance}}
 
 The first public commit to the \texttt{MSnbase} GitHub repository was
 in October 2010. Since then, the package benefited from 12
