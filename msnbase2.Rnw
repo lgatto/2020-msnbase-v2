@@ -76,16 +76,21 @@ library("patchwork")
 \section{Introduction}
 
 Mass spectrometry is a powerful technology to assay chemical and
-biological samples. It is used in routine with well characterised
-protocol, as well a development platform, to improve on existing
-methods and devise new ones. The complexity and diversity of mass
-spectrometry yield data that is itself complex and often times of
-considerable size, that require non trivial processing before
-producing interpretable results. This is particularly relevant, and
-can constitute a significant challenge for method development: in
-addition to the development of sample processing and mass spectrometry
-methods, there is a need to process, analyse, interpret and assess
-these new data to demonstrate the improvement in the technical,
+biological samples. It is used in routine applications with well
+characterised \textcolor{red}{protocols} \textcolor{red}{such as
+  diagnostics}, as well as a development platform,
+\textcolor{red}{with the aim} to improve on existing \sout{methods}
+\textcolor{red}{protocols} and devise new ones. The complexity and
+diversity of mass spectrometry yield data that is itself complex and
+often times of considerable size, that require non trivial processing
+before producing interpretable results. \sout{This is particularly
+  relevant, and can} \textcolor{red}{The complexity and size of these
+  data} constitute a significant challenge for \sout{method}
+\textcolor{red}{protocol} development: in addition to the development
+of sample processing and mass spectrometry methods
+\textcolor{red}{that yield the raw data}, \textcolor{red}{it is
+  essential} \sout{there is a need} to process, analyse, interpret and
+assess these new data to demonstrate the improvement in the technical,
 analytical and computational workflows.
 
 Practitioners have a diverse catalogue of software tools to explore,
@@ -323,7 +328,8 @@ p_access <-
   the in-memory (left) and on-disk (right) backends for 1, 10, 100
   1000, 5000 and all 6103 spectra. Benchmarks were performed on a Dell
   XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8
-  threads) and 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit. }
+  threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit
+  \textcolor{red}{and SSD drive}. }
 \label{fig:bench}
 \end{figure}
 
