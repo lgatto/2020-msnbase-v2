@@ -132,38 +132,50 @@ In \texttt{MSnbase}, mass spectrometry experiments are handled as
 \texttt{MSnExp} objects. While the implementation is more complex, it
 is useful to schematise a raw data experiment as being composed of raw
 data, i.e. a collection of individual spectra, as well as
-spectra-level metadata. Each spectrum is composed of m/z values and
-associated intensities. The metadata are represented by a
-\textcolor{red}{single} table with variables along the columns and
-each row associated to a spectrum. Among the metadata available for
-each spectrum, there are MS level, acquisition number, retention time,
-precursor m/z and intensity (for MS level 2 and above), and many
-more. \texttt{MSnbase} \textcolor{red}{relies on the \texttt{mzR}
-  package~\cite{Chambers:2012} to import raw mass spectrometry data
-  from one of the many community-maintained open standards formats
-  (mzML, mzXML, mzData or ANDI-MS/netCDF) and} provides a rich
-interface to manipulate such objects. The code chunk below illustrates
-such an object as displayed in the R console and an enumeration of the
-metadata fields.
+spectra-level metadata (Figure \ref{fig:raw}). Each spectrum is
+composed of m/z values and associated intensities. The metadata are
+represented by a \textcolor{red}{single} table with variables along
+the columns and each row associated to a spectrum. Among the metadata
+available for each spectrum, there are MS level, acquisition number,
+retention time, precursor m/z and intensity (for MS level 2 and
+above), and many more. \texttt{MSnbase} \textcolor{red}{relies on the
+  \texttt{mzR} package~\cite{Chambers:2012} to import raw mass
+  spectrometry data from one of the many community-maintained open
+  standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) and}
+provides a rich interface to manipulate such objects. The code chunk
+below illustrates such an object as displayed in the R console and an
+enumeration of the metadata fields.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\linewidth]{./figure/raw.png}
+  \caption{Schematic representation of what is referred to by
+    \textit{raw data}: a collection of mass spectra and a table
+    containing spectrum-level annotations along the lines. Raw data is
+    contained in one of the many community-maintained open standards
+    formats (mzML, mzXML, mzData or ANDI-MS/netCDF). }
+  \label{fig:raw}
+\end{figure}
+
 
 <<msnexp, echo = TRUE, eval = FALSE>>=
 > show(ms)
 MSn experiment data ("OnDiskMSnExp")
 Object size in memory: 0.54 Mb
 - - - Spectra data - - -
- MS level(s): 1 2 3 
- Number of spectra: 994 
+ MS level(s): 1 2 3
+ Number of spectra: 994
  MSn retention times: 45:27 - 47:6 minutes
 - - - Processing information - - -
-Data loaded [Sun Apr 26 15:40:58 2020] 
- MSnbase version: 2.13.6 
+Data loaded [Sun Apr 26 15:40:58 2020]
+ MSnbase version: 2.13.6
 - - - Meta data  - - -
 phenoData
   rowNames: MS3TMT11.mzML
   varLabels: sampleNames
   varMetadata: labelDescription
 Loaded from:
-  MS3TMT11.mzML 
+  MS3TMT11.mzML
 protocolData: none
 featureData
   featureNames: F1.S001 F1.S002 ... F1.S994 (994 total)
@@ -210,8 +222,8 @@ The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
 demonstrates how to create two \texttt{MSnExp} objects \textcolor{red}{importing
-  data from an mzML file and} storing \sout{data}\textcolor{red}{them} 
-either in-memory or on-disk. 
+  data from an mzML file and} storing \sout{data}\textcolor{red}{them}
+either in-memory or on-disk.
 
 <<readMSData, eval = FALSE, echo = TRUE>>=
 library("MSnbase")
@@ -227,67 +239,67 @@ colnames(sz) <- colnames(time) <- c(1, 5, 10)
 rownames(sz) <- rownames(time) <- c("in-memory", "on-disk")
 sz <- round(sz/(1014^2), 2)
 
-p_read <- 
-    data.frame(time) %>% 
-    rownames_to_column() %>% 
-    pivot_longer(names_to = "files", 
-                 values_to = "time", 
-                 -rowname) %>% 
-    rename(backend = rowname) %>% 
-    mutate(files = as.numeric(sub("X", "", files))) %>% 
-    ggplot(aes(x = files, y = time, colour = backend)) + 
-    geom_point() + 
-    geom_line() + 
-    scale_x_continuous(breaks=c(1, 5, 10)) + 
-    ylab("Reading time [s]") + 
-    xlab("Number of files") + 
+p_read <-
+    data.frame(time) %>%
+    rownames_to_column() %>%
+    pivot_longer(names_to = "files",
+                 values_to = "time",
+                 -rowname) %>%
+    rename(backend = rowname) %>%
+    mutate(files = as.numeric(sub("X", "", files))) %>%
+    ggplot(aes(x = files, y = time, colour = backend)) +
+    geom_point() +
+    geom_line() +
+    scale_x_continuous(breaks=c(1, 5, 10)) +
+    ylab("Reading time [s]") +
+    xlab("Number of files") +
     theme(legend.position = c(0.35, 0.86),
           legend.title = element_blank(),
           legend.text=element_text(size = 6))
 
 
-p_sz <- 
-    data.frame(sz) %>% 
-    rownames_to_column() %>% 
-    pivot_longer(names_to = "files", 
+p_sz <-
+    data.frame(sz) %>%
+    rownames_to_column() %>%
+    pivot_longer(names_to = "files",
                  values_to = "size",
-                 -rowname) %>% 
-    rename(backend = rowname) %>% 
-    mutate(files = as.numeric(sub("X", "", files))) %>% 
-    ggplot(aes(x = files, y = size, colour = backend)) + 
-    geom_point() + 
-    geom_line() + 
-    scale_x_continuous(breaks=c(1, 5, 10)) + 
+                 -rowname) %>%
+    rename(backend = rowname) %>%
+    mutate(files = as.numeric(sub("X", "", files))) %>%
+    ggplot(aes(x = files, y = size, colour = backend)) +
+    geom_point() +
+    geom_line() +
+    scale_x_continuous(breaks=c(1, 5, 10)) +
     ylab("Object size [MB]") +
     xlab("Number of files") +
-    theme(legend.position = "none")    
+    theme(legend.position = "none")
 @
 
 <<filt>>=
 load("bench_t_filt.rda")
-p_filt <- 
+p_filt <-
     tibble(time = microbenchmark:::convert_to_unit(t_filt$time, "ms"),
-           expr = as.character(t_filt$expr)) %>%    
+           expr = as.character(t_filt$expr)) %>%
     mutate(mode = if_else(grepl("mem", expr), "in-memory", "on-disk")) %>%
-    ggplot(aes(x = mode, y = time, fill = mode)) + 
-    ggplot2::geom_violin() + 
+    ggplot(aes(x = mode, y = time, fill = mode)) +
+    ggplot2::geom_violin() +
     ggplot2::scale_y_log10() +
-    ylab("Filtering time [ms]") + 
-    xlab("Backend") +    
+    ylab("Filtering time [ms]") +
+    xlab("Backend") +
     theme(legend.position = "none")
 
 @
 
 <<access>>=
 load("bench_t_access.rda")
-p_access <- 
+p_access <-
     tibble(time = microbenchmark:::convert_to_unit(t_access$time, "ms"),
            expr = as.character(t_access$expr)) %>%
     mutate(n = sub("^access_.+_", "", expr)) %>%
     mutate(n = sub("all", 6103, n)) %>%
     mutate(mode = if_else(grepl("mem", expr), "in-memory", "on-disk")) %>%
-    ggplot(aes(x = n, y = time, fill = mode)) + 
-    ggplot2::geom_violin() + 
+    ggplot(aes(x = n, y = time, fill = mode)) +
+    ggplot2::geom_violin() +
     ggplot2::scale_y_log10() +
     ylab("Raw data access [ms]") +
     xlab("Number of spectra (out of 6103)") +
@@ -298,8 +310,8 @@ p_access <-
 \begin{figure}[p]
   \centering
 <<plot_bench>>=
-(p_read + p_sz + p_filt) / p_access + 
-    plot_layout(heights = c(1, 0.75)) + 
+(p_read + p_sz + p_filt) / p_access +
+    plot_layout(heights = c(1, 0.75)) +
     plot_annotation(tag_levels = 'a') &
     theme(axis.title = element_text(size = 10))
 @
@@ -397,7 +409,7 @@ is described below and illustrated with code from
   identifies BoxCar spectra by their adjacent m/z segments with the
   \texttt{bc\_groups()} function and filtering relevant spectra with
   the \texttt{filterBoxCar()}.
-  
+
 \item Remove any signal outside the BoxCar segments using the
   \texttt{bc\_zero\_out\_box()} function from \texttt{MSnbaseBoxCar}
   (Figures~\ref{fig:bc}~(c) and (d)).
@@ -416,21 +428,22 @@ bc <- readMSData("boxcar.mzML", mode = "onDisk") %>%
       bc_zero_out_box() %>% ## remove signal outside of BoxCar segments
       combineSpectra(fcol = "bc_groups", ## reconstruct full spectrum
                      method = boxcarCombine)
-@  
+@
 
 
 After processing of the BoxCar data, the final object can either be
-further analysed in R or written back to disk as an \texttt{mzML} file
-using \texttt{writeMSData()} for processing with other tools.
+further analysed \sout{in R} \textcolor{red}{using \texttt{MSnbase}}
+or written back to disk as an \texttt{mzML} file using
+\texttt{writeMSData()} for processing with other tools.
 
 \begin{figure}[p]
   \centering
 <<plot_boxcar, message=FALSE, warning=FALSE, fig.height=8>>=
 load("boxcar.rda")
 p4 <- p4 + xlab("m/z")
-p1 + p2 + p3 + p4 + 
-    plot_layout(ncol = 1, 
-                heights = c(0.7, 1.2, 0.7, 0.7)) + 
+p1 + p2 + p3 + p4 +
+    plot_layout(ncol = 1,
+                heights = c(0.7, 1.2, 0.7, 0.7)) +
     plot_annotation(tag_levels = 'a') &
     theme(axis.title = element_text(size = 10),
           axis.text = element_text(size = 6),
@@ -471,7 +484,7 @@ vignette.
 <<serine_processing, echo=TRUE, eval=FALSE>>=
 serine_mz <- 106.049871
 serine_proc <- ms %>%
-    smooth(method = "SavitzkyGolay", halfWindowSize = 4L) %>% 
+    smooth(method = "SavitzkyGolay", halfWindowSize = 4L) %>%
     pickPeaks(refineMz = "descendPeak") %>%
     filterMz(c(serine_mz - 0.01, serine_mz + 0.01)) %>%
     filterRt(c(175, 187))
