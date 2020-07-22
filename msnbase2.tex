@@ -502,23 +502,19 @@ vignette.
 \end{figure}
 
 
-\section{Discussion}
-
-We have presented here some important functionality of
-\texttt{MSnbase} version 2. The new on-disk infrastructure enables
-large scale data analyses~\cite{Nothias:2020}, either using
-\texttt{MSnbase} directly or through packages that rely on it, such as
-\texttt{xcms}. We have also illustrated how \texttt{MSnbase} can be
-used for standard data analysis and visualisation, and how it can be
-used for method development and prototyping.
+\subsection{\textcolor{red}{Package management and governance}}
 
 The first public commit to the \texttt{MSnbase} GitHub repository was
 in October 2010. Since then, the package benefited from 12
 contributors\cite{contribs} that added various features, some
 particularly significant ones such as the on-disk backend described
-herein. According to \texttt{MSnbase}'s Bioconductor page, there are
-36 Bioconductor packages that depend, import or suggest it. Among
-these are \texttt{pRoloc}~\cite{Gatto:2014a} to analyse mass
+herein. \textcolor{red}{Contributions to the package are explicitly
+  encouraged, rewarded by an official contributor status and coverned
+  by a code of conduct.}  
+
+According to \texttt{MSnbase}'s Bioconductor page, there are 36
+Bioconductor packages that depend, import or suggest it. Among these
+are \texttt{pRoloc}~\cite{Gatto:2014a} to analyse mass
 spectrometry-based spatial proteomics data,
 \texttt{msmsTests}~\cite{msmsTests}, \texttt{DEP}~\cite{Zhang:2018},
 \texttt{DAPAR} and \texttt{ProStaR}~\cite{Wieczorek:2017} for the
@@ -534,7 +530,7 @@ such as for example IsoProt~\cite{Griss:2019}, that provides a
 reproducible workflow for iTRAQ/TMT experiments. \texttt{MSnbase}
 currently ranks 101 out of 1823 packages based on the monthly
 downloads from unique IP addresses, tallying over 1000 downloads from
-unique IP addresses each months.
+unique IP addresses each months. 
 
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
@@ -551,6 +547,23 @@ on other dedicated \textit{experiment packages} such as
 data. \texttt{MSnbase} is available on Windows, Mac OS and Linux under
 the open source Artistic 2.0 license and easily installable using
 standard installation procedures.
+
+
+\textcolor{red}{The growth of \texttt{MSnbase} and the user support
+  provided over the years attest to the core maintainers commitment to
+  long-term development, and the quality and maintainability of the
+  code base.}
+
+\section{Discussion}
+
+We have presented here some important functionality of
+\texttt{MSnbase} version 2. The new on-disk infrastructure enables
+large scale data analyses~\cite{Nothias:2020}, either using
+\texttt{MSnbase} directly or through packages that rely on it, such as
+\texttt{xcms}. We have also illustrated how \texttt{MSnbase} can be
+used for standard data analysis and visualisation, and how it can be
+used for method development and prototyping.
+
 
 
 
