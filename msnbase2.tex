@@ -314,7 +314,7 @@ either in-memory or on-disk.
   1000, 5000 and all 6103 spectra. Benchmarks were performed on a Dell
   XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8
   threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit
-  \textcolor{red}{and SSD drive}. }
+  \textcolor{red}{and an SSD drive}. }
 \label{fig:bench}
 \end{figure}
 
@@ -370,14 +370,26 @@ intensity).
 As shown on Figure~\ref{fig:bench} (c), this lazy mechanism is
 significantly faster than its application on in-memory data. The
 advantageous reading and execution times and memory footprint of the
-on-disk backend are possible by retrieving only spectra data from the selected
-subset hence avoiding access to the full raw
-data. Once access to the spectra m/z and intensity values become
-mandatory (for example for plotting), then the in-memory backend
-becomes more efficient, as illustrated on Figure~\ref{fig:bench}
-(d). This gain is maximal when the whole dataset is accessed
-(i.e. all spectra are already in memory) and negligible when only subsets of the
-data are requested.
+on-disk backend are possible by retrieving only spectra data from the
+selected subset hence avoiding access to the full raw data. Once
+access to the spectra m/z and intensity values become mandatory (for
+example for plotting), then the in-memory backend becomes more
+efficient, as illustrated on Figure~\ref{fig:bench} (d).
+\textcolor{red}{The benefit of accessing data in memory is however
+  reduced by underlying copies that are performed during the
+  subsetting operation. When subsetting an in-memory \texttt{MSnExp}
+  into a new, smaller in-memory \texttt{MSnExp} instance, the matrices
+  that contain the spectra for the new object are copied, thus leading
+  to increased execution time and (transient, if the original data is
+  replaced) memory usage. Figure~\ref{fig:bench} (d) shows that the
+  larger the subset, that smaller the benefits of an in-memory
+  backend. The example with the 6103 spectra, corresponding to the
+  full data (i.e. all spectra are already in memory and there is no
+  memory management overhead) is representative of memory access only
+  and constitutes the best case scenario. } The gain of an in-memory
+backend is maximal when the whole dataset is accessed \sout{(i.e. all
+  spectra are already in memory)} and becomes negligible when large
+subsets of the data are requested.
 
 
 \subsection{Prototyping}
@@ -511,7 +523,7 @@ contributors\cite{contribs} that added various features, some
 particularly significant ones such as the on-disk backend described
 herein. \textcolor{red}{Contributions to the package are explicitly
   encouraged, rewarded by an official contributor status and coverned
-  by a code of conduct.}  
+  by a code of conduct.}
 
 According to \texttt{MSnbase}'s Bioconductor page, there are 36
 Bioconductor packages that depend, import or suggest it. Among these
@@ -531,7 +543,7 @@ such as for example IsoProt~\cite{Griss:2019}, that provides a
 reproducible workflow for iTRAQ/TMT experiments. \texttt{MSnbase}
 currently ranks 101 out of 1823 packages based on the monthly
 downloads from unique IP addresses, tallying over 1000 downloads from
-unique IP addresses each months. 
+unique IP addresses each months.
 
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
