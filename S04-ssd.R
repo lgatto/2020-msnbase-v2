@@ -48,7 +48,8 @@ b <- microbenchmark(spectra(x1_ssd[1:100]),
                     spectra(x1_hd[1:100]),
                     times = 10L)
 
-## b - no noticeable difference when accessing 100 spectra in a single file
+## Results
+## No noticeable difference when accessing 100 spectra from a single file
 ## > Unit: seconds
 ##                expr      min       lq     mean   median       uq      max    neval
 ## spectra(x1_ssd[1:100]) 1.858352 1.864124 1.882133 1.871416 1.902859 1.923378    10
@@ -77,3 +78,7 @@ b <- microbenchmark(spectra(x_ssd[i]),
 ##               expr      min       lq     mean   median       uq      max neval
 ##  spectra(x_ssd[i])  67.1182  67.1182  67.1182  67.1182  67.1182  67.1182     1
 ##   spectra(x_hd[i]) 105.2481 105.2481 105.2481 105.2481 105.2481 105.2481     1
+
+b <- microbenchmark(spectra(x_ssd[i]),
+                    spectra(x_hd[i]),
+                    times = 5L)
