@@ -550,10 +550,13 @@ experiments and the widely used \texttt{xcms}~\cite{Smith:2006}
 package for the processing and analysis of metabolomics
 data. \texttt{MSnbase} is also used in non-R/Bioconductor software,
 such as for example IsoProt~\cite{Griss:2019}, that provides a
-reproducible workflow for iTRAQ/TMT experiments. \texttt{MSnbase}
-currently ranks 101 out of 1823 packages based on the monthly
-downloads from unique IP addresses, tallying over 1000 downloads from
-unique IP addresses each months.
+reproducible workflow for iTRAQ/TMT experiments. \textcolor{red}{The
+  BioContainers~\cite{da_Veiga_Leprevost:2017} project offers a
+  dedicated container for the \texttt{MSnbase} package, this
+  facilitating the reuse of the package in third-party pipelines.}
+\texttt{MSnbase} currently ranks 101 out of 1823 packages based on the
+monthly downloads from unique IP addresses, tallying over 1000
+downloads from unique IP addresses each months.
 
 As is custom with Bioconductor packages, \texttt{MSnbase} comes with
 ample documentation. Every user-accessible function is documented in a
