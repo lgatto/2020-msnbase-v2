@@ -53,6 +53,13 @@ for (i in seq_len(nrow(time_2))) {
 
 save(time_2, file = "bench_time_2.rda")
 
+
+## time_2 %>%
+##     mutate(ratio = time_mem/time_dsk) %>%
+##     pull(ratio) %>%
+##     mean
+## 5.367308
+
 ## ----------------------------------------------------------------------
 ## BENCHMARK: filtering
 ## ----------------------------------------------------------------------
