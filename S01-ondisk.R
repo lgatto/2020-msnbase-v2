@@ -36,6 +36,22 @@ time_sz <- lapply(n, function(i) {
 
 save(time_sz, file = "bench_time_sz.rda")
 
+## Repeat reading time in triplicates
+
+time_2 <- data.frame(
+    n = rep(n, each = 3),
+    time_mem = rep(NA, 9),
+    time_dsk = rep(NA, 9))
+
+for (i in seq_len(nrow(time_2))) {
+    n <- time_2$n[i]
+    f <- fls[seq_len(n)]
+    time_2[i, "time_mem"] <- system.time(x_mem <- readMSData(f, mode = "inMemory"))[["elapsed"]]
+    time_2[i, "time_dsk"] <- system.time(x_dsk <- readMSData(f, mode = "onDisk"))[["elapsed"]]
+    print(time_2)
+}
+
+
 ## ----------------------------------------------------------------------
 ## BENCHMARK: filtering
 ## ----------------------------------------------------------------------
