@@ -241,32 +241,35 @@ raw_mem <- readMSData("file.mzML", mode = "inMemory")
 raw_dsk <- readMSData("file.mzML", mode = "onDisk")
 @
 
-<<time_sz>>=
+<<time_sz, message=FALSE>>=
 load("bench_time_sz.rda")
-time <- sapply(time_sz, function(x) x[, "time"])
+load("bench_time_2.rda")
+
 sz <- sapply(time_sz, function(x) x[, "sz"])
-colnames(sz) <- colnames(time) <- c(1, 5, 10)
-rownames(sz) <- rownames(time) <- c("in-memory", "on-disk")
+colnames(sz) <- c(1, 5, 10)
+rownames(sz) <- c("in-memory", "on-disk")
 sz <- round(sz/(1014^2), 2)
 
-p_read <-
-    data.frame(time) %>%
-    rownames_to_column() %>%
-    pivot_longer(names_to = "files",
-                 values_to = "time",
-                 -rowname) %>%
-    rename(backend = rowname) %>%
-    mutate(files = as.numeric(sub("X", "", files))) %>%
-    ggplot(aes(x = files, y = time, colour = backend)) +
-    geom_point() +
-    geom_line() +
-    scale_x_continuous(breaks=c(1, 5, 10)) +
+set.seed(1L) ## set jittering
+p_read <- 
+    time_2 %>%
+    magrittr::set_colnames(c("n", "in-memory", "on-disk")) %>%
+    pivot_longer(names_to = "backend",
+                 values_to = "time", 
+                 cols = -n) %>%
+    ggplot(aes(x = factor(n), y = time, colour = backend)) + 
+    geom_jitter(width = 0.05, size = 2, alpha = 0.5) + 
+    geom_smooth(aes(group = backend),
+                method = "loess", 
+                se = FALSE,
+                size = 0.8) + 
     ylab("Reading time [s]") +
     xlab("Number of files") +
     theme(legend.position = c(0.35, 0.86),
           legend.title = element_blank(),
           legend.text=element_text(size = 6))
-
+    
+    
 
 p_sz <-
     data.frame(sz) %>%
@@ -277,8 +280,8 @@ p_sz <-
     rename(backend = rowname) %>%
     mutate(files = as.numeric(sub("X", "", files))) %>%
     ggplot(aes(x = files, y = size, colour = backend)) +
-    geom_point() +
-    geom_line() +
+    geom_point(size = 2, alpha = 0.5) +
+    geom_line(size = 0.8) +
     scale_x_continuous(breaks=c(1, 5, 10)) +
     ylab("Object size [MB]") +
     xlab("Number of files") +
@@ -319,21 +322,21 @@ p_access <-
 
 \begin{figure}[p]
   \centering
-<<plot_bench>>=
+<<plot_bench, warning=FALSE, message=FALSE>>=
 (p_read + p_sz + p_filt) / p_access +
     plot_layout(heights = c(1, 0.75)) +
     plot_annotation(tag_levels = 'a') &
     theme(axis.title = element_text(size = 10))
 @
-\caption{(a) Reading time (in seconds) and (b) data size in memory (in
-  MB) to read/store 1, 5 and 10 files containing 1431 MS1 (on-disk
-  only) and 6103 MS2 (on-disk and in-memory) spectra. (c) Filtering
-  benchmark assessed over 10 interactions on in-memory and on-disk
-  data containing 6103 MS2 spectra.  (d) Access time to spectra for
-  the in-memory (left) and on-disk (right) backends for 1, 10, 100
-  1000, 5000 and all 6103 spectra. Benchmarks were performed on a Dell
-  XPS laptop with an Intel i5-8250U processor 1.60 GHz (4 cores, 8
-  threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit
+\caption{(a) Reading time (triplicates, in seconds) and (b) data size
+  in memory (in MB) to read/store 1, 5 and 10 files containing 1431
+  MS1 (on-disk only) and 6103 MS2 (on-disk and in-memory) spectra. (c)
+  Filtering benchmark assessed over 10 interactions on in-memory and
+  on-disk data containing 6103 MS2 spectra.  (d) Access time to
+  spectra for the in-memory (left) and on-disk (right) backends for 1,
+  10, 100 1000, 5000 and all 6103 spectra. Benchmarks were performed
+  on a Dell XPS laptop with an Intel i5-8250U processor 1.60 GHz (4
+  cores, 8 threads), 7.5 GB RAM running Ubuntu 18.04.4 LTS 64-bit
   \textcolor{red}{and an SSD drive}. \textcolor{red}{The data used for
     the benchmarking are a TMT 4-plex experiment acquired on a LTQ
     Orbitrap Velos ((Thermo Fisher Scientific) available in the
