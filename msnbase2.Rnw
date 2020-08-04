@@ -68,6 +68,8 @@
   development, and visualisation.
 \end{abstract}
 
+Keywords: R, Bioconductor, software, mass spectrometry, data, data processing
+
 <<setup, include = FALSE, message = FALSE>>=
 knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
 library("tidyverse")
@@ -613,6 +615,11 @@ The version of \texttt{MSnbase} used in this manuscript is
 version 2.0. The code to reproduce the analyses and figures in this
 article is available at
 \url{https://github.com/lgatto/2020-msnbase-v2/}.
+
+\section{Associated Content}
+
+Supplementary file 1: script documenting the processing of 1182 mzXML
+files (5773464 spectra) using \texttt{MSnbase}.
 
 
 \begin{acknowledgement}
