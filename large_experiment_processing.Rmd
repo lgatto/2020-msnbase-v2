@@ -2,7 +2,9 @@
 title: "Supplementary data for: \\textit{`MSnbase`, efficient and elegant R-based processing and visualisation of raw mass spectrometry data}"
 author: "Laurent Gatto, Sebastian Gibb and Johannes Rainer"
 output:
-    BiocStyle::pdf_document
+    BiocStyle::pdf_document:
+        includes:
+            in_header: "header.sty"
 ---
 
 ```{r style, echo = FALSE, results = 'asis', message=FALSE}
@@ -236,7 +238,7 @@ In total `length(ms_sub)` spectra were selected from in total
 `r length(unique(fromFile(ms_sub)))` data files/samples. The plot below shows 
 the data for the first spectrum.
 
-```{r precursor-selection-plot-1}
+```{r precursor-selection-plot-1, fig.cap = "Example spectrum of the data set."}
 system.time(
     plot(ms_sub[[1]])
 )["elapsed"]
@@ -260,7 +262,7 @@ system.time(
 
 The result on the first spectrum is shown below.
 
-```{r precursor-selection-plot-normalized}
+```{r precursor-selection-plot-normalized, fig.cap = "Example spectrum after cleaning."}
 system.time(
     plot(ms_sub[[1]])
 )["elapsed"]
