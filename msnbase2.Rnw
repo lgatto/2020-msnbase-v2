@@ -254,25 +254,25 @@ rownames(sz) <- c("in-memory", "on-disk")
 sz <- round(sz/(1014^2), 2)
 
 set.seed(1L) ## set jittering
-p_read <- 
+p_read <-
     time_2 %>%
     magrittr::set_colnames(c("n", "in-memory", "on-disk")) %>%
     pivot_longer(names_to = "backend",
-                 values_to = "time", 
+                 values_to = "time",
                  cols = -n) %>%
-    ggplot(aes(x = factor(n), y = time, colour = backend)) + 
-    geom_jitter(width = 0.05, size = 2, alpha = 0.5) + 
+    ggplot(aes(x = factor(n), y = time, colour = backend)) +
+    geom_jitter(width = 0.05, size = 2, alpha = 0.5) +
     geom_smooth(aes(group = backend),
-                method = "loess", 
+                method = "loess",
                 se = FALSE,
-                size = 0.8) + 
+                size = 0.8) +
     ylab("Reading time [s]") +
     xlab("Number of files") +
     theme(legend.position = c(0.35, 0.86),
           legend.title = element_blank(),
           legend.text=element_text(size = 6))
-    
-    
+
+
 
 p_sz <-
     data.frame(sz) %>%
@@ -342,7 +342,7 @@ p_access <-
   Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM
   running Ubuntu 18.04.4 LTS 64-bit \textcolor{red}{and an SSD
     drive}. \textcolor{red}{The data used for the benchmarking are a
-    TMT 4-plex experiment acquired on a LTQ Orbitrap Velos ((Thermo
+    TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo
     Fisher Scientific) available in the \texttt{msdata} package and
     described in \citep{Gatto:2014}.}}
 \label{fig:bench}
@@ -547,7 +547,7 @@ in October 2010. Since then, the package benefited from 12
 contributors\cite{contribs} that added various features, some
 particularly significant ones such as the on-disk backend described
 herein. \textcolor{red}{Contributions to the package are explicitly
-  encouraged, rewarded by an official contributor status and coverned
+  encouraged, rewarded by an official contributor status and governed
   by a code of conduct.}
 
 According to \texttt{MSnbase}'s Bioconductor page, there are 36
