@@ -63,7 +63,7 @@
   manipulation, processing and visualisation of mass spectrometry
   data. We focus on the new \textit{on-disk} infrastructure, that
   allows the handling of large raw mass spectrometry
-  experiment\textcolor{red}{s} on commodity hardware and illustrate
+  experiment\textcolor{black}{s} on commodity hardware and illustrate
   how the package is used for elegant data processing, method
   development, and visualisation.
 \end{abstract}
@@ -81,29 +81,29 @@ library("patchwork")
 
 Mass spectrometry is a powerful technology to assay chemical and
 biological samples. It is used in routine applications with well
-characterised \textcolor{red}{protocols} \textcolor{red}{such as in
+characterised \textcolor{black}{protocols} \textcolor{black}{such as in
   clinical settings}, as well as a development platform,
-\textcolor{red}{with the aim} to improve on existing
-\textcolor{red}{protocols} and devise new ones. The complexity and
-diversity of mass spectrometry yield complex \textcolor{red}{data} of
+\textcolor{black}{with the aim} to improve on existing
+\textcolor{black}{protocols} and devise new ones. The complexity and
+diversity of mass spectrometry yield complex \textcolor{black}{data} of
 considerable size, that require non trivial processing before
-producing interpretable results.  \textcolor{red}{The complexity and
+producing interpretable results.  \textcolor{black}{The complexity and
   size of these data} constitute a significant challenge for
-\textcolor{red}{protocol} development: in addition to the development
+\textcolor{black}{protocol} development: in addition to the development
 of sample processing and mass spectrometry methods
-\textcolor{red}{that yield the raw data}, \textcolor{red}{it is
+\textcolor{black}{that yield the raw data}, \textcolor{black}{it is
   essential} to process, analyse, interpret and assess these new data
 to demonstrate the improvement in the technical, analytical and
 computational workflows.
 
 Practitioners have a diverse catalogue of software tools at their
 disposal. These range from low level software libraries that are aimed
-at programmers to enable \textcolor{red}{the} development of new
+at programmers to enable \textcolor{black}{the} development of new
 applications, to more user-oriented applications with graphical user
 interfaces which provide a more limited set of functionalities to
 address a defined scope. Examples of software libraries include
 Java-based jmzML~\cite{Cote:2010} or C/C++-based
-ProteoWizard~\cite{Chambers:2012}.  \textcolor{red}{Thermo Scientific
+ProteoWizard~\cite{Chambers:2012}.  \textcolor{black}{Thermo Scientific
   Proteome Discoverer (Thermo Fisher Scientific)},
 MaxQuant~\cite{Cox:2008} and PeptideShaker~\cite{Vaudel:2015} are
 among the most widely used user-centric applications.
@@ -117,16 +117,16 @@ Pyteomics~\cite{Goloborodko:2013}, offers a platform that lies between
 low level libraries and end-user software. \texttt{MSnbase} provides a
 flexible R~\cite{R} command-line environment for metabolomics and
 proteomics mass spectrometry-based applications. It lays out a sound
-infrastructure to work with raw mass spectrometry \textcolor{red}{data
+infrastructure to work with raw mass spectrometry \textcolor{black}{data
   from MS files in mzML, mzXML, mzData or ANDI-MS/netCDF format as
   well as} quantitative and proteomics identification data. The
 package enables manipulation (for example subsetting, filtering, or
 accessing specific parts thereof), detailed step-by-step processing
-(for example smoothing and centroiding of \textcolor{red}{profile-mode
+(for example smoothing and centroiding of \textcolor{black}{profile-mode
   MS} data, or normalisation and imputation of quantitative data),
 analysis and visualisation of these data and the development of novel
 computational mass spectrometry
-methods~\cite{Stanstrup:2019}. \textcolor{red}{Extensive documentation
+methods~\cite{Stanstrup:2019}. \textcolor{black}{Extensive documentation
   and use cases are provided in \textit{package
     vignettes}~\cite{MSnbaseVignettes} and
   workflows~\cite{xcmsWorkflow}.} Here, we focus on the new
@@ -141,15 +141,15 @@ is useful to schematise a raw data experiment as being composed of raw
 data, i.e. a collection of individual spectra, as well as
 spectra-level metadata (Figure \ref{fig:raw}). Each spectrum is
 composed of m/z values and associated intensities. The metadata are
-represented by a \textcolor{red}{single} table with variables along
+represented by a \textcolor{black}{single} table with variables along
 the columns and each row associated to a spectrum. Among the metadata
 available for each spectrum, there are MS level, acquisition number,
 retention time, precursor m/z and intensity (for MS level 2 and
-above), and many more. \texttt{MSnbase} \textcolor{red}{relies on the
+above), and many more. \texttt{MSnbase} \textcolor{black}{relies on the
   \texttt{mzR} package~\cite{Chambers:2012} to import raw mass
   spectrometry data from one of the many community-maintained open
   standards formats (mzML, mzXML, mzData or ANDI-MS/netCDF) and}
-provides a rich \textcolor{red}{and principled} interface to
+provides a rich \textcolor{black}{and principled} interface to
 manipulate such objects. The code chunk below illustrates such an
 object as displayed in the R console and an enumeration of the
 metadata fields.
@@ -157,7 +157,7 @@ metadata fields.
 \begin{figure}
   \centering
   \includegraphics[width=0.8\linewidth]{./figure/raw.png}
-  \caption{\textcolor{red}{Schematic representation of what is
+  \caption{\textcolor{black}{Schematic representation of what is
       referred to by \textit{raw data}: a collection of mass spectra
       and a table containing spectrum-level annotations along the
       lines. Raw data are imported from one of the many
@@ -212,16 +212,16 @@ experimentData: use 'experimentData(object)'
 [35] "spectrum"
 @
 
-In the following sections, we describe \textcolor{red}{how
+In the following sections, we describe \textcolor{black}{how
   \texttt{MSnbase}} can be used for data processing and
-visualisation. \textcolor{red}{An example of its ability to also
+visualisation. \textcolor{black}{An example of its ability to also
   efficiently handle very large mass spectrometry experiments (in this
   case with 5,773,464 spectra in 1,182 mzXML files) is provided as
   supplementary information.}  We will also illustrate how it makes
 use of the forward-pipe operator (\texttt{\%>\%}) defined in the
 \texttt{magrittr} package. This operator has proved useful to develop
 non-trivial analyses by combining individual functions into easily
-readable \textcolor{red}{and elegant} pipelines.
+readable \textcolor{black}{and elegant} pipelines.
 
 
 \subsection{On-disk backend}
@@ -229,7 +229,7 @@ readable \textcolor{red}{and elegant} pipelines.
 The main feature in version 2 of the \texttt{MSnbase} package was the
 addition of different backends for raw data storage, namely
 \textit{in-memory} and \textit{on-disk}. The following code chunk
-demonstrates how to \textcolor{red}{import data from an mzML file} to
+demonstrates how to \textcolor{black}{import data from an mzML file} to
 create two \texttt{MSnExp} objects that store the data either
 in memory or on disk.
 
@@ -326,7 +326,7 @@ p_access <-
     plot_annotation(tag_levels = 'a') &
     theme(axis.title = element_text(size = 10))
 @
-\caption{(a) Reading time (\textcolor{red}{triplicates,} in seconds)
+\caption{(a) Reading time (\textcolor{black}{triplicates,} in seconds)
   and (b) data size in memory (in MB) to read/store 1, 5 and 10 files
   containing 1431 MS1 (on-disk only) and 6103 MS2 (on-disk and
   in-memory) spectra. (c) Filtering benchmark assessed over 10
@@ -335,8 +335,8 @@ p_access <-
   on-disk (right) backends for 1, 10, 100 1000, 5000 and all 6103
   spectra. Benchmarks were performed on a Dell XPS laptop with an
   Intel i5-8250U processor 1.60 GHz (4 cores, 8 threads), 7.5 GB RAM
-  running Ubuntu 18.04.4 LTS 64-bit \textcolor{red}{and an SSD
-    drive}. \textcolor{red}{The data used for the benchmarking are a
+  running Ubuntu 18.04.4 LTS 64-bit \textcolor{black}{and an SSD
+    drive}. \textcolor{black}{The data used for the benchmarking are a
     TMT 4-plex experiment acquired on a LTQ Orbitrap Velos (Thermo
     Fisher Scientific) available in the \texttt{msdata} package and
     described in \citep{Gatto:2014}.}}
@@ -359,13 +359,13 @@ direct benefits using the on-disk backend, namely faster reading and
 reduced memory footprint. Figure \ref{fig:bench} shows 5-fold faster
 reading times (a) and over a 10-fold reduction in memory usage (b).
 
-\textcolor{red}{Because the on-disk backend does not hold all the
+\textcolor{black}{Because the on-disk backend does not hold all the
   spectra data in memory, direct manipulations of these data are not
   possible. We thus implemented a \textit{lazy processing} mechanism
   for this backend that caches any data manipulation operations in a
   processing queue in the object itself. These operations are then
   applied only when the user accesses m/z or intensity values. }
-\textcolor{red}{As an additional advantage, operations on subsets of
+\textcolor{black}{As an additional advantage, operations on subsets of
   the data become much faster since data manipulations are applied
   only to data subsets instead of the full data set at once. Also,
   on-disk data access is parallelized by data file ensuring a higher
@@ -392,7 +392,7 @@ selected subset hence avoiding access to the full raw data. Once
 access to the spectra m/z and intensity values become mandatory (for
 example for plotting), then the in-memory backend becomes more
 efficient, as illustrated on Figure~\ref{fig:bench} (d).
-\textcolor{red}{The benefit of accessing data in memory is however
+\textcolor{black}{The benefit of accessing data in memory is however
   reduced by underlying copies that are performed during the
   subsetting operation. When subsetting an in-memory \texttt{MSnExp}
   into a new, smaller in-memory \texttt{MSnExp} instance, the matrices
@@ -406,13 +406,12 @@ efficient, as illustrated on Figure~\ref{fig:bench} (d).
   constitutes the best case scenario. } 
 
 
-\textcolor{blue}{The on-disk backend has become the preferred backend
-  for large data manipulation, and the only viable alternative for
-  very large data (i.e. larger than the available RAM) and/or when
-  several MS levels are to loaded and handled simultaneously. The
-  on-disk backend can still prove useful in cases when small MS2-only
-  data are to be analysed and will remain available in future versions
-  of \texttt{MSnbase}.}
+\textcolor{black}{The on-disk backend has become the preferred backend
+  for large data, and the only viable alternative when the size of the
+  data exceeds the available RAM and/or when several MS levels are to
+  be loaded and handled simultaneously. The on-disk backend can still
+  prove useful in cases when small MS2-only data are to be analysed
+  and will remain available in future versions of \texttt{MSnbase}.}
 
 
 \subsection{Prototyping}
@@ -427,7 +426,7 @@ and thus limiting the proportion of highly abundant precursors in each
 segment. A full scan is reconstructed by combining the respective
 adjacent segments of the BoxCar acquisitions. The
 \texttt{MSnbaseBoxCar} package\cite{MSnbaseBoxCar} is a small package
-that demonstrates this. The simple \textcolor{red}{pipeline} is
+that demonstrates this. The simple \textcolor{black}{pipeline} is
 composed of three steps, described below, and illustrated with code
 from \texttt{MSnbaseBoxCar} in the following code chunk.
 
@@ -462,7 +461,7 @@ bc <- readMSData("boxcar.mzML", mode = "onDisk") %>%
 
 
 After processing of the BoxCar data, the final object can either be
-further analysed \textcolor{red}{using \texttt{MSnbase}} or written
+further analysed \textcolor{black}{using \texttt{MSnbase}} or written
 back to disk as an \texttt{mzML} file using \texttt{writeMSData()} for
 processing with other tools.
 
@@ -504,7 +503,7 @@ spectrometry\cite{Gatto:2015,protViz,Pviz,Bemis:2015}. Here, we
 conclude the overview of version 2 of the \texttt{MSnbase} package by
 highlighting the flexibility of the software to visualise and assess
 the efficiency of raw data processing. Figure \ref{fig:cent} compares
-the raw MS profile data \textcolor{red}{imported from an mzML file}
+the raw MS profile data \textcolor{black}{imported from an mzML file}
 for serine and the same data after smoothing, centroiding and m/z
 refinement, as illustrated in the code chunk below. Detailed execution
 and description of these operations can be found in the \emph{MSnbase:
@@ -535,13 +534,13 @@ serine_proc <- ms %>%
 \end{figure}
 
 
-\subsection{\textcolor{red}{Package maintenance and governance}}
+\subsection{\textcolor{black}{Package maintenance and governance}}
 
 The first public commit to the \texttt{MSnbase} GitHub repository was
 in October 2010. Since then, the package benefited from 12
 contributors\cite{contribs} that added various features, some
 particularly significant ones such as the on-disk backend described
-herein. \textcolor{red}{Contributions to the package are explicitly
+herein. \textcolor{black}{Contributions to the package are explicitly
   encouraged, rewarded by an official contributor status and governed
   by a code of conduct.}
 
@@ -551,7 +550,7 @@ are \texttt{pRoloc}~\cite{Gatto:2014a} to analyse mass
 spectrometry-based spatial proteomics data,
 \texttt{msmsTests}~\cite{msmsTests}, \texttt{DEP}~\cite{Zhang:2018},
 \texttt{DAPAR} and \texttt{ProStaR}~\cite{Wieczorek:2017} for the
-statistical analysis \textcolor{red}{of} quantitative proteomics data,
+statistical analysis \textcolor{black}{of} quantitative proteomics data,
 \texttt{RMassBank}~\cite{Stravs:2013} to process metabolomics tandem
 MS files and build MassBank records,
 \texttt{MSstatsQC}~\cite{Dogu:2017} for longitudinal system
@@ -560,7 +559,7 @@ experiments and the widely used \texttt{xcms}~\cite{Smith:2006}
 package for the processing and analysis of metabolomics
 data. \texttt{MSnbase} is also used in non-R/Bioconductor software,
 such as for example IsoProt~\cite{Griss:2019}, that provides a
-reproducible workflow for iTRAQ/TMT experiments. \textcolor{red}{The
+reproducible workflow for iTRAQ/TMT experiments. \textcolor{black}{The
   BioContainers~\cite{da_Veiga_Leprevost:2017} project offers a
   dedicated container for the \texttt{MSnbase} package, this
   facilitating the reuse of the package in third-party pipelines.}
@@ -585,7 +584,7 @@ the open source Artistic 2.0 license and easily installable using
 standard installation procedures.
 
 
-\textcolor{red}{The growth of \texttt{MSnbase} and the user support
+\textcolor{black}{The growth of \texttt{MSnbase} and the user support
   provided over the years attest to the core maintainers commitment to
   long-term development, and the quality and maintainability of the
   code base.}
