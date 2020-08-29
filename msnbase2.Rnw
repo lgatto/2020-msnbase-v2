@@ -418,6 +418,15 @@ efficient, as illustrated on Figure~\ref{fig:bench} (d).
   subsets of the data are requested.}
 
 
+\textcolor{blue}{The on-disk backend has become the preferred backend
+  for large data manipulation, and the only viable alternative for
+  very large data (i.e. larger than the available RAM) and/or when
+  several MS levels are to loaded and handled simultaneously. The
+  on-disk backend can still prove useful in cases when small MS2-only
+  data are to be analysed and will remain available in future versions
+  of \texttt{MSnbase}.}
+
+
 \subsection{Prototyping}
 
 The \texttt{MSnExp} data structure and its interface constitute an
