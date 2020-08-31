@@ -9,8 +9,8 @@ how the package is used for elegant data processing, method
 development and visualisation.
 
 - The [manuscript](https://github.com/lgatto/2020-msnbase-v2/raw/master/msnbase2.pdf).
-- Supplementary material presenting a large scale analysis with the on-disk backend.
-- Presentation of the software at ISMB 2020: https://youtu.be/lSiVZnrV5Bc.
+- [Supplementary material](https://github.com/lgatto/2020-msnbase-v2/raw/master/large_experiment_processing.pdf) presenting a large scale analysis with the on-disk backend.
+- Presentation of the software at ISMB 2020: [https://youtu.be/lSiVZnrV5Bc](https://youtu.be/lSiVZnrV5Bc).
 
 The code to reproduce the analyses and figures:
 
