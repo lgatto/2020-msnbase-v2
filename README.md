@@ -19,6 +19,10 @@ The code to reproduce the analyses and figures:
 - [S03-vis.R](https://github.com/lgatto/2020-msnbase-v2/blob/master/S03-vis.R)
 
 
+More information:
+- The [MSnbase website](http://lgatto.github.io/MSnbase/)
+- MSnbase's [Bioconductor landing page](http://bioconductor.org/packages/release/bioc/html/MSnbase.html)
+
 Citation:
 
 > MSnbase, efficient and elegant R-based processing and visualisation of raw mass spectrometry data. Laurent Gatto, Sebastian Gibb, Johannes Rainer. bioRxiv 2020.04.29.067868; doi: https://doi.org/10.1101/2020.04.29.067868
