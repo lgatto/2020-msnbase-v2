@@ -1,0 +1,582 @@
+\documentclass[journal=jacsat,manuscript=suppinfo]{achemso}
+
+\usepackage[]{graphicx}
+\usepackage[]{color}
+
+\usepackage[]{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage[T1]{fontenc} % Use modern font encodings
+
+\usepackage[version=3]{mhchem}
+\usepackage{amsmath}
+\newcommand*\mycommand[1]{\texttt{\emph{#1}}}
+
+\author{Laurent Gatto}
+\email{laurent.gatto@uclouvain.be}
+\affiliation[UCLouvain]{Computational Biology Unit, de Duve Institute, Universit\'e catholique de Louvain, Brussels, Belgium}
+\author{Sebastian Gibb}
+\affiliation[University of Greifswald]{Department of Anaesthesiology and Intensive Care of the University Medicine Greifswald, Germany}
+\author{Johannes Rainer}
+\affiliation[Eurac Research]{Institute for Biomedicine, Eurac Research, Affiliated Institute of the University of L\"ubeck, Bolzano, Italy}
+
+
+\title[MSnbase version 2]
+  {\texttt{MSnbase}, efficient and elegant R-based processing and
+    visualisation of raw mass spectrometry data}
+
+\makeatletter
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Supplementary data for: },
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+
+% pandoc header
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+This document describes handling of mass spectrometry data from large
+experiments using the \texttt{MSnbase} package and more specifically its
+\emph{on-disk} backend. For demonstration purposes, the
+\href{https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp}{MassIVE}
+data set
+\href{https://massive.ucsd.edu/ProteoSAFe/dataset.jsp?task=5e7034cc98c54a47b803b144bff6a296}{MSV000080030}
+is used. This consists of over 1,000 mzXML files from swab-samples
+collected from hands and various personal objects of 80 volunteers.
+
+\hypertarget{data-handling-and-analysis-with-msnbase}{%
+\section{\texorpdfstring{Data handling and analysis with
+\texttt{MSnbase}}{Data handling and analysis with MSnbase}}\label{data-handling-and-analysis-with-msnbase}}
+
+In this section we demonstrate data handling and access by
+\texttt{MSnbase} on a large experiment consisting of more than 1,000
+data files.
+
+To reproduce the analysis described in this document, download the
+\emph{MSV000080030} folder from
+\url{ftp://massive.ucsd.edu/MSV000080030/} and place it into the same
+folder as this document.
+
+Below we load the required libraries and define the files to be
+analyzed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(MSnbase)}
+\KeywordTok{library}\NormalTok{(magrittr)}
+\KeywordTok{library}\NormalTok{(pryr)}
+
+\NormalTok{fls \textless{}{-}}\StringTok{ }\KeywordTok{dir}\NormalTok{(}\StringTok{"MSV000080030/ccms\_peak/Forensic\_study\_80\_volunteers/"}\NormalTok{,}
+           \DataTypeTok{pattern =} \StringTok{"mzXML"}\NormalTok{, }\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The data set consists of 1182 mzXML files. We next load the data using
+the two different \texttt{MSnbase} backends \texttt{"inMemory}" and
+\texttt{"onDisk"}. For the in-memory backend, due to the larger memory
+requirements, we import the data only from a subset of the files.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ms\_mem \textless{}{-}}\StringTok{ }\KeywordTok{readMSData}\NormalTok{(fls[}\KeywordTok{grep}\NormalTok{(}\StringTok{"Hand"}\NormalTok{, fls)], }\DataTypeTok{mode =} \StringTok{"inMemory"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Next we load data from all mzXML files as an on-disk \texttt{MSnExp}
+object.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ms\_dsk \textless{}{-}}\StringTok{ }\KeywordTok{readMSData}\NormalTok{(fls, }\DataTypeTok{mode =} \StringTok{"onDisk"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Below we count the number of spectra per MS level of the whole
+experiment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(}\KeywordTok{msLevel}\NormalTok{(ms\_dsk))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##       1       2 
+## 1173678 4599786
+\end{verbatim}
+
+Note that the in-memory \texttt{MSnExp} object contains only MS2 spectra
+(in total 2140520) from a subset of data files. However, the data import
+was much slower (over \textasciitilde{} 12 hours for the in-memory
+backend while creating the on-disk object from the full data data set
+took \textasciitilde{} 3 hours).
+
+Next we subset the on-disk object to contain the same set of spectra as
+the in-memory \texttt{MSnExp} and compare their memory footprint.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ms\_dsk\_hands \textless{}{-}}\StringTok{ }\NormalTok{ms\_dsk }\OperatorTok{\%\textgreater{}\%}
+\StringTok{    }\KeywordTok{filterFile}\NormalTok{(}\KeywordTok{grep}\NormalTok{(}\StringTok{"Hand"}\NormalTok{, fls)) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{    }\KeywordTok{filterMsLevel}\NormalTok{(2L)}
+
+\KeywordTok{object\_size}\NormalTok{(ms\_mem)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 21.8 GB
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{object\_size}\NormalTok{(ms\_dsk\_hands)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 617 MB
+\end{verbatim}
+
+Since the on-disk object stores only spectra metadata in memory it
+occupies also much less system memory. As a comparison, the on-disk
+\texttt{MSnExp} for the full experiment was still much smaller than the
+in-memory object:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{object\_size}\NormalTok{(ms\_dsk)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 1.66 GB
+\end{verbatim}
+
+\hypertarget{basic-ms-data-access-functionality}{%
+\subsection{Basic MS data access
+functionality}\label{basic-ms-data-access-functionality}}
+
+Before evaluating the \texttt{MSnbase} performance on the large data set
+we provide some general description of the \texttt{MSnbase} data classes
+and basic data access operations. MS data from raw data files in mzML,
+mzXML, mzData or netCDF format is represented by the \texttt{MSnExp}
+object which organizes the spectra from the original files in an
+one-dimensional list. Functions like \texttt{rtime} and \texttt{msLevel}
+allow to extract the retention time and MS level, respectively. They
+return a \texttt{numeric} (or \texttt{integer}) vector with the same
+length as the number of spectra in the \texttt{MSnExp}. In the example
+below we use the \texttt{rtime} function to extract the retention times
+for each spectrum.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rts \textless{}{-}}\StringTok{ }\KeywordTok{rtime}\NormalTok{(ms\_dsk)}
+\KeywordTok{length}\NormalTok{(rts)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5773464
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(rts)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## F0001.S0001 F0001.S0002 F0001.S0003 F0001.S0004 F0001.S0005 F0001.S0006 
+##       0.470       0.803       1.136       1.468       1.801       2.134
+\end{verbatim}
+
+The \texttt{fromFile} function can be used to determine the source file
+(sample) of a specific spectrum in the \texttt{MSnExp} object. This
+function returns an \texttt{integer} vector, of the same length as
+spectra in the experiment, with the file index. The file names can be
+accessed with the \texttt{fileNames} method. An \texttt{MSnExp} object
+can be subsetted with \texttt{{[}} and e.g.~the index of the spectra
+that should be retained. In the code block below we subset our
+\texttt{ms\_dsk} object to keep only spectra from the 3rd file.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{one\_file \textless{}{-}}\StringTok{ }\NormalTok{ms\_dsk[}\KeywordTok{fromFile}\NormalTok{(ms\_dsk) }\OperatorTok{==}\StringTok{ }\DecValTok{3}\NormalTok{]}
+\KeywordTok{length}\NormalTok{(one\_file)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4911
+\end{verbatim}
+
+Note that there are also dedicated \emph{filter} functions to subset an
+\texttt{MSnExp} object such as \texttt{filterFile},
+\texttt{filterMsLevel}, \texttt{filterRt}, \texttt{filterMz},
+\texttt{filterPrecursorMz} or \texttt{filterIsolationWindow}. In the
+example below we use the \texttt{filterRt} function to further subset
+our data to keep only spectra acquired within a certain time range.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{one\_file \textless{}{-}}\StringTok{ }\KeywordTok{filterRt}\NormalTok{(one\_file, }\DataTypeTok{rt =} \KeywordTok{c}\NormalTok{(}\DecValTok{40}\NormalTok{, }\DecValTok{300}\NormalTok{))}
+\KeywordTok{length}\NormalTok{(one\_file)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1996
+\end{verbatim}
+
+As mentioned above, the \texttt{MSnExp} object is comparable with a list
+of spectra. Thus, to extract a single spectrum from it we can use
+\texttt{{[}{[}}. This will return an object of type \texttt{Spectrum}
+which encapsules/represents all information of the measured spectrum
+(i.e.~m/z and intensity values as well as metadata information). In the
+example below we extract the 15th spectrum from our data subset and
+access its m/z values with the \texttt{mz} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sp \textless{}{-}}\StringTok{ }\NormalTok{one\_file[[}\DecValTok{15}\NormalTok{]]}
+\KeywordTok{mz}\NormalTok{(sp)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  400.4412  431.2400 1617.8282
+\end{verbatim}
+
+This particular spectrum has only 3 peaks.
+
+Note that m/z or intensity values can also be directly extracted from
+the \texttt{MSnExp} object as shown in the example below. The result
+will be a \texttt{list} of \texttt{numeric} vectors, each element
+representing the m/z values for each spectrum in the object.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mzs \textless{}{-}}\StringTok{ }\KeywordTok{mz}\NormalTok{(one\_file)}
+\KeywordTok{class}\NormalTok{(mzs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "list"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{length}\NormalTok{(mzs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1996
+\end{verbatim}
+
+In addition, it is also possible to extract all m/z and intensity values
+from an \texttt{MSnExp} object as a \texttt{data.frame} as shown in the
+code block below, but this is not suggested, since it loads all the data
+into memory but all MS spectrum metadata such as MS level or precursor
+m/z get lost.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df \textless{}{-}}\StringTok{ }\KeywordTok{as}\NormalTok{(one\_file, }\StringTok{"data.frame"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   file     rt       mz   i
+## 1    1 40.118 387.2650  88
+## 2    1 40.118 389.2627 192
+## 3    1 40.118 474.2964 164
+## 4    1 40.450 387.2416 212
+## 5    1 40.450 389.2666 184
+## 6    1 40.450 445.2680 132
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{nrow}\NormalTok{(df)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2854657
+\end{verbatim}
+
+Note that for all these operations it is irrelevant whether an in-memory
+or on-disk backend was used. In general it is advisable to use the
+on-disk backend especially for experiments with more than
+\textasciitilde{} 50 files.
+
+\hypertarget{performance-of-the-on-disk-backend-on-large-scale-data-sets}{%
+\subsection{\texorpdfstring{Performance of the \emph{on-disk} backend on
+large scale data
+sets}{Performance of the on-disk backend on large scale data sets}}\label{performance-of-the-on-disk-backend-on-large-scale-data-sets}}
+
+To demonstrate \texttt{MSnbase}'s efficiency in processing large scale
+experiments we perform some standard subsetting, data access and
+manipulation operations.
+
+We first compare the performance of the on-disk and in-memory backend on
+accessing m/z values with the \texttt{mz} function on a set of 100
+randomly selected spectra. The performance is assessed with the
+\texttt{microbenchmark} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{idx \textless{}{-}}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\KeywordTok{seq\_along}\NormalTok{(ms\_mem), }\DecValTok{100}\NormalTok{)}
+
+\KeywordTok{library}\NormalTok{(microbenchmark)}
+\KeywordTok{microbenchmark}\NormalTok{(}\KeywordTok{mz}\NormalTok{(ms\_mem[idx]),}
+               \KeywordTok{mz}\NormalTok{(ms\_dsk\_hands[idx]),}
+               \DataTypeTok{times =} \DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Unit: seconds
+##                   expr       min        lq     mean    median       uq      max
+##        mz(ms_mem[idx]) 51.109825 52.054915 61.29039 63.480004 64.92025 74.88694
+##  mz(ms_dsk_hands[idx])  3.638812  3.644038 13.97493  3.970938 28.53509 30.08579
+##  neval
+##      5
+##      5
+\end{verbatim}
+
+For this combined subsetting and data access operation the on-disk
+backend performed better than the in-memory \texttt{MSnExp}, while even
+requiring much less memory.
+
+Next we extract all MS2 spectra with a retention time between 50 and 60
+seconds and a precursor m/z of 108.5362 (+/- 5ppm). This subsetting
+operation is performed on the on-disk \texttt{MSnExp} object
+representing the full experiment with the 1182 data files/samples. To
+assess the performance of the following operations we use
+\texttt{system.time} calls that record elapsed time in seconds.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{system.time}\NormalTok{(}
+\NormalTok{    ms\_sub \textless{}{-}}\StringTok{ }\NormalTok{ms\_dsk }\OperatorTok{\%\textgreater{}\%}
+\StringTok{        }\KeywordTok{filterMsLevel}\NormalTok{(2L) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{        }\KeywordTok{filterRt}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{50}\NormalTok{, }\DecValTok{60}\NormalTok{)) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{        }\KeywordTok{filterPrecursorMz}\NormalTok{(}\DataTypeTok{mz =} \FloatTok{108.5362}\NormalTok{, }\DataTypeTok{ppm =} \DecValTok{5}\NormalTok{)}
+\NormalTok{)[}\StringTok{"elapsed"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## elapsed 
+##   6.529
+\end{verbatim}
+
+In total \texttt{length(ms\_sub)} spectra were selected from in total
+928 data files/samples. The plot below shows the data for the first
+spectrum.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{system.time}\NormalTok{(}
+    \KeywordTok{plot}\NormalTok{(ms\_sub[[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{)[}\StringTok{"elapsed"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{large_experiment_processing_files/figure-latex/precursor-selection-plot-1-1.pdf}
+\caption{Example spectrum of the data set.}
+\end{figure}
+
+\begin{verbatim}
+## elapsed 
+##   0.398
+\end{verbatim}
+
+Since there seems to be quite some background noise in the MS2 spectrum
+we next remove peaks with an intensity below 50 by first replacing their
+intensities with 0 (with the \texttt{removePeaks} call) and subsequently
+removing all 0-intensity peaks from each spectrum with the
+\texttt{clean} call. In addition we \emph{normalize} each spectrum by
+dividing the maximum intensity per spectrum from the spectrum's
+intensities.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{system.time}\NormalTok{(}
+\NormalTok{    ms\_sub \textless{}{-}}\StringTok{ }\NormalTok{ms\_sub }\OperatorTok{\%\textgreater{}\%}
+\StringTok{        }\KeywordTok{removePeaks}\NormalTok{(}\DataTypeTok{t =} \DecValTok{50}\NormalTok{) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{        }\KeywordTok{clean}\NormalTok{(}\DataTypeTok{all =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{\%\textgreater{}\%}
+\StringTok{        }\KeywordTok{normalize}\NormalTok{(}\DataTypeTok{method =} \StringTok{"max"}\NormalTok{)}
+\NormalTok{)[}\StringTok{"elapsed"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## elapsed 
+##   0.006
+\end{verbatim}
+
+The result on the first spectrum is shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{system.time}\NormalTok{(}
+    \KeywordTok{plot}\NormalTok{(ms\_sub[[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{)[}\StringTok{"elapsed"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[h!]
+\centering
+\includegraphics{large_experiment_processing_files/figure-latex/precursor-selection-plot-normalized-1.pdf}
+\caption{Example spectrum after cleaning.}
+\end{figure}
+
+\begin{verbatim}
+## elapsed 
+##   0.547
+\end{verbatim}
+
+\pagebreak
+
+Note that any of the data manipulations above are not directly applied
+to the data but \emph{cached} in the object's internal \emph{lazy
+processing queue} (explaining the very short running time of the
+normalization call). The operations are only effectively applied to the
+data when m/z or intensity values are extracted from the object, e.g.~in
+the \texttt{plot} call above.
+
+For additional workflows employing \texttt{MSnbase} see also
+\href{https://jorainer.github.io/metabolomics2018/xcms-preprocessing.html}{metabolomics2018}\footnote{https://github.com/jorainer/metabolomics2018}
+that explains filtering, plotting and centroiding of profile-mode MS
+data with \texttt{MSnbase} and subsequent pre-processing of the (label
+free/untargeted) LC-MS data with the \texttt{xcms} package (that builds
+upon \texttt{MSnbase} for MS data representation and access).
+
+\hypertarget{system-information}{%
+\subsection{System information}\label{system-information}}
+
+The present analysis was run on a MacBook Pro 16,1 with 2.3 GHz 8-Core
+Intel Core i9 CPU and 64 GB 2667 MHz DDR4 memory running macOS version
+10.15.5. The R version and the version of the used packages are listed
+below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sessionInfo}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## R version 4.0.2 (2020-06-22)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Catalina 10.15.6
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
+## [8] methods   base     
+## 
+## other attached packages:
+##  [1] microbenchmark_1.4-7 BiocParallel_1.22.0  pryr_0.1.4          
+##  [4] magrittr_1.5         MSnbase_2.14.2       ProtGenerics_1.20.0 
+##  [7] S4Vectors_0.26.1     mzR_2.22.0           Rcpp_1.0.5          
+## [10] Biobase_2.48.0       BiocGenerics_0.34.0  BiocStyle_2.16.0    
+## [13] rmarkdown_2.3       
+## 
+## loaded via a namespace (and not attached):
+##  [1] lattice_0.20-41       digest_0.6.25         foreach_1.5.0        
+##  [4] R6_2.4.1              plyr_1.8.6            mzID_1.26.0          
+##  [7] evaluate_0.14         ggplot2_3.3.2         highr_0.8            
+## [10] pillar_1.4.6          zlibbioc_1.34.0       rlang_0.4.7          
+## [13] rticles_0.15          preprocessCore_1.50.0 labeling_0.3         
+## [16] stringr_1.4.0         munsell_0.5.0         tinytex_0.25         
+## [19] compiler_4.0.2        xfun_0.16             pkgconfig_2.0.3      
+## [22] pcaMethods_1.80.0     htmltools_0.5.0       tidyselect_1.1.0     
+## [25] tibble_3.0.3          bookdown_0.20         IRanges_2.22.2       
+## [28] codetools_0.2-16      XML_3.99-0.5          crayon_1.3.4         
+## [31] dplyr_1.0.2           MASS_7.3-52           grid_4.0.2           
+## [34] gtable_0.3.0          lifecycle_0.2.0       affy_1.66.0          
+## [37] scales_1.1.1          ncdf4_1.17            stringi_1.4.6        
+## [40] impute_1.62.0         farver_2.0.3          affyio_1.58.0        
+## [43] doParallel_1.0.15     limma_3.44.3          ellipsis_0.3.1       
+## [46] generics_0.0.2        vctrs_0.3.4           iterators_1.0.12     
+## [49] tools_4.0.2           glue_1.4.2            purrr_0.3.4          
+## [52] yaml_2.2.1            colorspace_1.4-1      BiocManager_1.30.10  
+## [55] vsn_3.56.0            MALDIquant_1.19.3     knitr_1.29
+\end{verbatim}
+\end{document}
