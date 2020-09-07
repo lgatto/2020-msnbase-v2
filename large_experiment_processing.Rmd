@@ -1,11 +1,16 @@
 ---
-title: "Supplementary data for: \\textit{`MSnbase`, efficient and elegant R-based processing and visualisation of raw mass spectrometry data}"
-author: "Laurent Gatto, Sebastian Gibb and Johannes Rainer"
-output:
-    BiocStyle::pdf_document:
-        includes:
-            in_header: "header.sty"
+title: "MSnbase, efficient and elegant R-based processing and visualisation of raw mass spectrometry data"
+author:
+  - name: Laurent Gatto
+    affiliation: Computational Biology Unit, de Duve Institute, Universit\'e catholique de Louvain, Brussels, Belgium
+  - name: Sebastian Gibb
+    affiliation: Department of Anaesthesiology and Intensive Care of the University Medicine Greifswald, Germany
+  - name: Johannes Rainer
+    affiliation: Institute for Biomedicine, Eurac Research, Affiliated Institueof the University of L\"ubeck, Bolzano, Italy
+output: 
+  rticles::acs_article:
 ---
+
 
 ```{r style, echo = FALSE, results = 'asis', message=FALSE}
 BiocStyle::markdown()
