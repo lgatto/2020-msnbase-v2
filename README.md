@@ -26,3 +26,5 @@ More information:
 Citation:
 
 > MSnbase, efficient and elegant R-based processing and visualisation of raw mass spectrometry data. Laurent Gatto, Sebastian Gibb, Johannes Rainer. bioRxiv 2020.04.29.067868; doi: https://doi.org/10.1101/2020.04.29.067868
+
+Now published in Journal of Proteome Research doi: [10.1021/acs.jproteome.0c00313](http://dx.doi.org/10.1021/acs.jproteome.0c00313)
